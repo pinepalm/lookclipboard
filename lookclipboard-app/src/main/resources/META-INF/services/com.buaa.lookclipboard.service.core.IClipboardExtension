@@ -1,0 +1,3 @@
+com.buaa.lookclipboard.service.core.impl.ClipboardTextExtension
+com.buaa.lookclipboard.service.core.impl.ClipboardImageExtension
+com.buaa.lookclipboard.service.core.impl.ClipboardFilesExtension
