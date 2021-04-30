@@ -2,16 +2,18 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 21:11:11
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 22:10:04
+ * @LastEditTime: 2021-04-30 20:22:16
  * @Description: 剪贴板图像扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
-import com.buaa.lookclipboard.domain.IRecord;
+import com.buaa.commons.foundation.Ref;
+import com.buaa.lookclipboard.model.IRecord;
 import com.buaa.lookclipboard.model.ActionResult;
 import com.buaa.lookclipboard.model.IActionResult;
 
 import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
 /**
@@ -19,8 +21,15 @@ import javafx.scene.input.DataFormat;
  */
 public final class ClipboardImageExtension extends ClipboardExtension<Image> {
     @Override
-    protected IActionResult onReceivedInternal(IRecord record, Image content) {
-        return new ActionResult(Double.toString(content.getHeight()), 200);
+    public boolean isEqualInternal(IRecord lastRecord, Image content) {
+        return false;
+    }
+
+    @Override
+    protected IActionResult onReceivedInternal(IRecord newRecord, Image content, Ref<String> outContent) {
+        outContent.set(Double.toString(content.getHeight()));
+        
+        return new ActionResult(null, 200);
     }
 
     @Override
@@ -29,15 +38,15 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
     }
 
     @Override
-    public IActionResult onCopied(IRecord record) {
-        // TODO Auto-generated method stub
+    public IActionResult onCopied(IRecord record, Ref<ClipboardContent> outContent) {
         return new ActionResult(null, 400);
     }
 
     @Override
-    public IActionResult onEdited(IRecord record, Object editInfo) {
-        // TODO Auto-generated method stub
-        return new ActionResult(record.getInfo(), 200);
+    public IActionResult onEdited(IRecord record, Object editContent, Ref<String> outContent) {
+        outContent.set(record.getContent());
+        
+        return new ActionResult(record.getContent(), 200);
     }
 
     @Override

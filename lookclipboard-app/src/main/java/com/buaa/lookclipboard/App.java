@@ -2,12 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 14:04:41
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 19:46:51
- * @Description: App
+ * @LastEditTime: 2021-04-30 19:56:53
+ * @Description: 应用
  */
 package com.buaa.lookclipboard;
 
 import com.buaa.lookclipboard.service.ClipboardService;
+import com.buaa.lookclipboard.service.SettingsService;
 
 import javafx.application.Application;
 import javafx.concurrent.Worker.State;
@@ -19,11 +20,20 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 
+/**
+ * 应用
+ */
 public class App extends Application {
     private static WebEngine webEngine;
 
-    public static WebEngine getWebEngine() {
-        return webEngine;
+    /**
+     * 运行JavaScript代码
+     * 
+     * @param code 代码
+     * @return 运行结果
+     */
+    public static Object runJavaScript(String code) {
+        return webEngine.executeScript(code);
     }
 
     public static void main(String[] args) throws Exception {
@@ -39,9 +49,10 @@ public class App extends Application {
             if (newState.equals(State.SUCCEEDED)) {
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("clipboardService", ClipboardService.instance);
+                window.setMember("settingsService", SettingsService.instance);
             }
         });
-        webEngine.load(getClass().getResource("/assets/test.html").toExternalForm());
+        webEngine.load(getClass().getResource("/assets/index.html").toExternalForm());
 
         StackPane layoutRoot = new StackPane(webView);
         Scene scene = new Scene(layoutRoot);

@@ -2,10 +2,10 @@
  * @Author: Zhe Chen
  * @Date: 2021-03-26 19:34:56
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 13:11:40
+ * @LastEditTime: 2021-04-30 20:18:04
  * @Description: 懒加载类
  */
-package com.buaa.appmodel.foundation;
+package com.buaa.commons.foundation;
 
 import java.util.function.Supplier;
 

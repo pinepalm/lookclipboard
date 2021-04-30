@@ -2,14 +2,16 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 20:41:25
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 22:19:59
+ * @LastEditTime: 2021-04-30 20:18:27
  * @Description: 剪贴板扩展接口
  */
 package com.buaa.lookclipboard.service.core;
 
-import com.buaa.lookclipboard.domain.IRecord;
+import com.buaa.commons.foundation.Ref;
+import com.buaa.lookclipboard.model.IRecord;
 import com.buaa.lookclipboard.model.IActionResult;
 
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
 /**
@@ -24,36 +26,48 @@ public interface IClipboardExtension {
     DataFormat getDataFormat();
 
     /**
+     * 判断是否内容与上一条记录相同
+     * 
+     * @param lastRecord 上一条记录
+     * @param content    原始内容
+     * @return 是否内容与上一条记录相同
+     */
+    boolean isEqual(IRecord lastRecord, Object content);
+
+    /**
      * 在接收时调用
      * 
-     * @param record  关联的记录
-     * @param content 原始内容
-     * @return 操作结果(若statusCode为200, 则info为处理后的信息, 否则info为错误信息)
+     * @param newRecord  关联的记录
+     * @param content    原始内容
+     * @param outContent 处理后内容
+     * @return 操作结果
      */
-    IActionResult onReceived(IRecord record, Object content);
+    IActionResult onReceived(IRecord newRecord, Object content, Ref<String> outContent);
 
     /**
      * 在编辑时调用
      * 
-     * @param record   关联的记录
-     * @param editInfo 编辑信息
-     * @return 操作结果(若statusCode为200, 则info为处理后的信息, 否则info为错误信息)
+     * @param record      关联的记录
+     * @param editContent 编辑信息
+     * @param outContent  处理后内容
+     * @return 操作结果
      */
-    IActionResult onEdited(IRecord record, Object editInfo);
+    IActionResult onEdited(IRecord record, Object editContent, Ref<String> outContent);
 
     /**
      * 在复制时调用
      * 
-     * @param record 关联的记录
-     * @return 操作结果(info为复制结果信息)
+     * @param record     关联的记录
+     * @param outContent 生成的数据包
+     * @return 操作结果
      */
-    IActionResult onCopied(IRecord record);
+    IActionResult onCopied(IRecord record, Ref<ClipboardContent> outContent);
 
     /**
      * 在删除时调用
      * 
      * @param record 关联的记录
-     * @return 操作结果(info为删除结果信息)
+     * @return 操作结果
      */
     IActionResult onDeleted(IRecord record);
 }

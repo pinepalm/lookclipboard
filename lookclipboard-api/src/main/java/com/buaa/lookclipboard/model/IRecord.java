@@ -2,12 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-23 14:28:05
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 13:14:03
+ * @LastEditTime: 2021-04-30 14:35:38
  * @Description: 记录接口
  */
-package com.buaa.lookclipboard.domain;
+package com.buaa.lookclipboard.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javafx.scene.input.DataFormat;
 
@@ -44,11 +45,11 @@ public interface IRecord {
     LocalDateTime getModifiedTime();
 
     /**
-     * 获取信息
+     * 获取内容
      * 
-     * @return 信息
+     * @return 内容
      */
-    String getInfo();
+    String getContent();
 
     /**
      * 获取是否固定
@@ -56,4 +57,11 @@ public interface IRecord {
      * @return 是否固定
      */
     boolean getIsPinned();
+
+    /**
+     * 获取标签列表
+     * 
+     * @return 标签列表
+     */
+    List<IRecordTag> getTags();
 }

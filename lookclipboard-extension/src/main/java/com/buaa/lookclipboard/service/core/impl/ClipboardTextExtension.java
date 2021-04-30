@@ -2,13 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 21:09:04
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 22:14:13
+ * @LastEditTime: 2021-04-30 20:20:53
  * @Description: 剪贴板文本扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
-import com.buaa.appmodel.core.datatransfer.Clipboard;
-import com.buaa.lookclipboard.domain.IRecord;
+import com.buaa.commons.foundation.Ref;
+import com.buaa.lookclipboard.model.IRecord;
 import com.buaa.lookclipboard.model.ActionResult;
 import com.buaa.lookclipboard.model.IActionResult;
 
@@ -20,8 +20,15 @@ import javafx.scene.input.DataFormat;
  */
 public final class ClipboardTextExtension extends ClipboardExtension<String> {
     @Override
-    protected IActionResult onReceivedInternal(IRecord record, String content) {
-        return new ActionResult(content, 200);
+    public boolean isEqualInternal(IRecord lastRecord, String content) {
+        return lastRecord.getContent().equals(content);
+    }
+
+    @Override
+    protected IActionResult onReceivedInternal(IRecord newRecord, String content, Ref<String> outContent) {
+        outContent.set(content);
+        
+        return new ActionResult(null, 200);
     }
 
     @Override
@@ -30,15 +37,19 @@ public final class ClipboardTextExtension extends ClipboardExtension<String> {
     }
 
     @Override
-    public IActionResult onCopied(IRecord record) {
+    public IActionResult onCopied(IRecord record, Ref<ClipboardContent> outContent) {
         ClipboardContent content = new ClipboardContent();
-        content.putString(record.getInfo());
-        return new ActionResult(null, Clipboard.setContent(content) ? 200 : 400);
+        content.putString(record.getContent());
+        outContent.set(content);
+
+        return new ActionResult(null, 200);
     }
 
     @Override
-    public IActionResult onEdited(IRecord record, Object editInfo) {
-        return new ActionResult(editInfo.toString(), 200);
+    public IActionResult onEdited(IRecord record, Object editContent, Ref<String> outContent) {
+        outContent.set(editContent.toString());
+
+        return new ActionResult(null, 200);
     }
 
     @Override

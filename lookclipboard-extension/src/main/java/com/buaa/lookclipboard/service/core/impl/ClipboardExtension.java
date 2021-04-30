@@ -2,12 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 20:42:26
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 21:57:28
+ * @LastEditTime: 2021-04-30 20:19:31
  * @Description: 剪贴板扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
-import com.buaa.lookclipboard.domain.IRecord;
+import com.buaa.commons.foundation.Ref;
+import com.buaa.lookclipboard.model.IRecord;
 import com.buaa.lookclipboard.model.IActionResult;
 import com.buaa.lookclipboard.service.core.IClipboardExtension;
 
@@ -16,12 +17,18 @@ import com.buaa.lookclipboard.service.core.IClipboardExtension;
  * 
  * @param <T> 内容类型
  */
+@SuppressWarnings("unchecked")
 public abstract class ClipboardExtension<T> implements IClipboardExtension {
-    protected abstract IActionResult onReceivedInternal(IRecord record, T content);
+    protected abstract boolean isEqualInternal(IRecord lastRecord, T content);
+    protected abstract IActionResult onReceivedInternal(IRecord newRecord, T content, Ref<String> outContent);
 
-    @SuppressWarnings("unchecked")
     @Override
-    public IActionResult onReceived(IRecord record, Object content) {
-        return onReceivedInternal(record, (T) content);
+    public boolean isEqual(IRecord lastRecord, Object content) {
+        return isEqualInternal(lastRecord, (T) content);
+    }
+
+    @Override
+    public IActionResult onReceived(IRecord newRecord, Object content, Ref<String> outContent) {
+        return onReceivedInternal(newRecord, (T) content, outContent);
     }
 }
