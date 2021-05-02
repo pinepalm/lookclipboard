@@ -2,13 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 19:31:45
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 16:10:41
+ * @LastEditTime: 2021-05-02 13:48:13
  * @Description: 剪贴板
  */
 package com.buaa.appmodel.core.datatransfer;
 
-import com.buaa.appmodel.core.event.Event;
-import com.buaa.appmodel.core.event.EventArgs;
+import com.buaa.commons.event.Event;
+import com.buaa.commons.event.EventArgs;
 import com.sun.glass.ui.ClipboardAssistance;
 
 import javafx.scene.input.ClipboardContent;

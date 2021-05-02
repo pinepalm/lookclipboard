@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-22 12:48:03
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-30 20:22:56
+ * @LastEditTime: 2021-05-02 17:21:50
  * @Description: 记录
  */
 package com.buaa.lookclipboard.model;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.buaa.commons.foundation.Lazy;
+import com.buaa.lookclipboard.util.LocalDateTimeUtil;
 import com.buaa.lookclipboard.util.Md5Util;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -35,27 +36,28 @@ public class Record implements IRecord {
     public static Record createNow(DataFormat dataFormat) {
         LocalDateTime createdTime = LocalDateTime.now(ZoneOffset.UTC);
         String id = Md5Util.md5(createdTime.toString() + random.nextInt());
-        return new Record(id, dataFormat, createdTime);
+        Record record = new Record();
+        record.setID(id);
+        record.setDataFormat(dataFormat);
+        record.setCreatedTime(createdTime);
+        
+        return record;
     }
 
     private String id;
     private DataFormat dataFormat;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
     private LocalDateTime createdTime;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
     private LocalDateTime modifiedTime;
     private String content;
     private boolean isPinned;
-    private final List<IRecordTag> tags;
-    private final Lazy<IRecord> readonlyRecord;
 
-    public Record(String id, DataFormat dataFormat, LocalDateTime createdTime) {
-        this.id = id;
-        this.dataFormat = dataFormat;
-        this.createdTime = createdTime;
+    private final List<IRecordTag> tags = new ArrayList<>();;
+    private final Lazy<IRecord> readonlyRecord = new Lazy<>(() -> new ReadOnlyRecord());
 
-        tags = new ArrayList<>();
-        readonlyRecord = new Lazy<>(() -> new ReadOnlyRecord());
+    public Record() {
+
     }
 
     /**

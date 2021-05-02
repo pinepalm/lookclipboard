@@ -2,11 +2,14 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 14:04:41
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-30 19:56:53
+ * @LastEditTime: 2021-05-02 17:03:21
  * @Description: 应用
  */
 package com.buaa.lookclipboard;
 
+import java.sql.Statement;
+
+import com.buaa.lookclipboard.dao.DataAccessCenter;
 import com.buaa.lookclipboard.service.ClipboardService;
 import com.buaa.lookclipboard.service.SettingsService;
 
@@ -24,7 +27,17 @@ import netscape.javascript.JSObject;
  * 应用
  */
 public class App extends Application {
+    private static Stage stage;
     private static WebEngine webEngine;
+
+    /**
+     * 获取 Stage 对象
+     * 
+     * @return Stage 对象
+     */
+    public static Stage getStage() {
+        return stage;
+    }
 
     /**
      * 运行JavaScript代码
@@ -42,11 +55,23 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        stage = primaryStage;
+
         WebView webView = new WebView();
         webView.setContextMenuEnabled(false);
         webEngine = webView.getEngine();
         webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
             if (newState.equals(State.SUCCEEDED)) {
+                try {
+                    DataAccessCenter.open();
+                    Statement statement = DataAccessCenter.createStatement();
+                    statement.executeUpdate("create table if not exists records (id text primary key not null, dataFormat text not null, createdTime timestamp, modifiedTime timestamp, content text, isPinned boolean not null)");
+                    statement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("clipboardService", ClipboardService.instance);
                 window.setMember("settingsService", SettingsService.instance);
@@ -58,7 +83,9 @@ public class App extends Application {
         Scene scene = new Scene(layoutRoot);
 
         primaryStage.getIcons().add(new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
-        primaryStage.setTitle("LookClipboard");
+        primaryStage.setTitle(AppConfig.instance.getDisplayName());
+        primaryStage.setOpacity(SettingsService.instance.getOpacity());
+        primaryStage.setAlwaysOnTop(SettingsService.instance.getAlwaysOnTop());
         primaryStage.setMinWidth(468d);
         primaryStage.setWidth(468d);
         primaryStage.setMinHeight(880d);

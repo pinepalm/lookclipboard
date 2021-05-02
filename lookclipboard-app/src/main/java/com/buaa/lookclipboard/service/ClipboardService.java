@@ -2,17 +2,14 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 20:35:05
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-30 20:24:55
+ * @LastEditTime: 2021-05-02 17:25:58
  * @Description: 剪贴板服务
  */
 package com.buaa.lookclipboard.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 
@@ -31,7 +28,7 @@ import com.buaa.lookclipboard.service.core.IClipboardExtension;
 import com.buaa.lookclipboard.util.ActionResultUtil;
 import com.buaa.lookclipboard.util.ExtensionUtil;
 import com.buaa.lookclipboard.util.JsonUtil;
-import com.buaa.lookclipboard.util.StringUtil;
+import com.buaa.lookclipboard.util.ObjectUtil;
 
 /**
  * 剪贴板服务
@@ -42,8 +39,6 @@ public final class ClipboardService {
      */
     public final static ClipboardService instance = new ClipboardService();
 
-    private final Map<String, DataFormat> dataFormats = new HashMap<>();
-    private final Map<String, DataFormat> readonlyDataFormats = Collections.unmodifiableMap(dataFormats);
     private final List<IClipboardExtension> extensions = new ArrayList<>();
 
     private boolean isCopying;
@@ -53,8 +48,6 @@ public final class ClipboardService {
         ServiceLoader<IClipboardExtension> serviceLoader = ExtensionUtil.createServiceLoader(
                 Arrays.asList(getClass().getResource("/extensions").getPath()), IClipboardExtension.class);
         for (IClipboardExtension extension : serviceLoader) {
-            DataFormat dataFormat = extension.getDataFormat();
-            dataFormats.put(dataFormat.toString(), dataFormat);
             extensions.add(extension);
         }
 
@@ -86,7 +79,7 @@ public final class ClipboardService {
                         String recordJson = JsonUtil.stringify(record);
                         if (recordJson != null) {
                             String addRecord = String.format("addRecord(%s)",
-                                    StringUtil.asJavaScriptString(recordJson));
+                                    ObjectUtil.asJavaScriptString(recordJson));
                             App.runJavaScript(addRecord);
                         }
                     }
@@ -98,7 +91,7 @@ public final class ClipboardService {
     }
 
     private String handle(String id, BiFunction<Record, IClipboardExtension, String> function) {
-        Record record = RecordDao.instance.get(id);
+        Record record = RecordDao.instance.getById(id);
         if (record != null) {
             for (IClipboardExtension extension : extensions) {
                 if (record.getDataFormat().equals(extension.getDataFormat())) {
@@ -144,7 +137,7 @@ public final class ClipboardService {
             IActionResult result = extension.onDeleted(record.asReadOnly());
 
             if (ActionResultUtil.isSuccess(result)) {
-                RecordDao.instance.delete(record);
+                RecordDao.instance.delete(record.getID());
             }
 
             return JsonUtil.stringify(result);
@@ -180,7 +173,7 @@ public final class ClipboardService {
      * @return 操作结果JSON字符串
      */
     public String setIsPinned(String id, boolean isPinned) {
-        Record record = RecordDao.instance.get(id);
+        Record record = RecordDao.instance.getById(id);
 
         if (record != null) {
             record.setIsPinned(isPinned);
@@ -191,11 +184,12 @@ public final class ClipboardService {
     }
 
     /**
-     * 获取支持的数据类型映射
+     * 获取所有记录
      * 
-     * @return 支持的数据类型映射
+     * @return 所有记录
      */
-    public Map<String, DataFormat> getSupportedDataFormats() {
-        return readonlyDataFormats;
+    public String getAllRecords() {
+        List<Record> recordList = RecordDao.instance.getAll();
+        return JsonUtil.stringify(recordList);
     }
 }

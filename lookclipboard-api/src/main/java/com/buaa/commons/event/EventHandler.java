@@ -2,10 +2,10 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-02 20:39:52
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 13:10:19
+ * @LastEditTime: 2021-05-02 13:47:29
  * @Description: 事件处理类
  */
-package com.buaa.appmodel.core.event;
+package com.buaa.commons.event;
 
 /**
  * 事件处理类

@@ -5,7 +5,7 @@
  * @LastEditTime: 2021-04-26 13:09:33
  * @Description: 事件类
  */
-package com.buaa.appmodel.core.event;
+package com.buaa.commons.event;
 
 import java.util.ArrayList;
 import java.util.List;

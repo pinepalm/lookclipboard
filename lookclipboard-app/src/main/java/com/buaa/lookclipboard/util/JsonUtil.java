@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-26 22:25:57
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-30 15:56:48
+ * @LastEditTime: 2021-05-01 23:25:09
  * @Description: JSON工具类
  */
 package com.buaa.lookclipboard.util;
@@ -24,6 +24,24 @@ public final class JsonUtil {
         try {
             ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
             return mapper.writeValueAsString(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 将JSON字符串解析为对象
+     * 
+     * @param <T>       对象类型
+     * @param content   JSON字符串
+     * @param valueType 对象类
+     * @return 对象
+     */
+    public static <T> T parse(String content, Class<T> valueType) {
+        try {
+            ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
+            return mapper.readValue(content, valueType);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
