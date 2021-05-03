@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 20:35:05
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 17:25:58
+ * @LastEditTime: 2021-05-03 12:10:36
  * @Description: 剪贴板服务
  */
 package com.buaa.lookclipboard.service;
@@ -20,6 +20,7 @@ import com.buaa.lookclipboard.dao.RecordDao;
 import com.buaa.lookclipboard.model.ActionResult;
 import com.buaa.lookclipboard.model.IActionResult;
 import com.buaa.lookclipboard.model.Record;
+import com.buaa.lookclipboard.model.RecordQueryCondition;
 
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -184,12 +185,26 @@ public final class ClipboardService {
     }
 
     /**
-     * 获取所有记录
+     * 通过记录查询条件获取记录列表
      * 
-     * @return 所有记录
+     * @param condition 记录查询条件JSON字符串
+     * @return 记录列表
      */
-    public String getAllRecords() {
-        List<Record> recordList = RecordDao.instance.getAll();
+    public String getRecordsByCondition(String conditionJSON) {
+        RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class);
+        List<Record> recordList = condition != null ? RecordDao.instance.getByCondition(condition) : null;
         return JsonUtil.stringify(recordList);
+    }
+
+    /**
+     * 通过记录查询条件获取记录数
+     * 
+     * @param conditionJSON 记录查询条件JSON字符串
+     * @return 记录数
+     */
+    public int getRecordsCountByCondition(String conditionJSON) {
+        RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class);
+        int recordsCount = condition != null ? RecordDao.instance.getCountByCondition(condition) : 0;
+        return recordsCount;
     }
 }

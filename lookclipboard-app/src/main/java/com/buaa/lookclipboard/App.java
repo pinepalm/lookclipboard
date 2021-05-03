@@ -2,14 +2,13 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 14:04:41
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 17:03:21
+ * @LastEditTime: 2021-05-03 01:35:09
  * @Description: 应用
  */
 package com.buaa.lookclipboard;
 
-import java.sql.Statement;
-
 import com.buaa.lookclipboard.dao.DataAccessCenter;
+import com.buaa.lookclipboard.dao.RecordDao;
 import com.buaa.lookclipboard.service.ClipboardService;
 import com.buaa.lookclipboard.service.SettingsService;
 
@@ -64,13 +63,11 @@ public class App extends Application {
             if (newState.equals(State.SUCCEEDED)) {
                 try {
                     DataAccessCenter.open();
-                    Statement statement = DataAccessCenter.createStatement();
-                    statement.executeUpdate("create table if not exists records (id text primary key not null, dataFormat text not null, createdTime timestamp, modifiedTime timestamp, content text, isPinned boolean not null)");
-                    statement.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(1);
                 }
+                RecordDao.instance.createIfNotExists();
                 
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("clipboardService", ClipboardService.instance);

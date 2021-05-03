@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-05-01 23:47:22
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 18:08:08
+ * @LastEditTime: 2021-05-03 01:31:38
  * @Description: 记录数据访问接口
  */
 package com.buaa.lookclipboard.dao;
@@ -10,13 +10,17 @@ package com.buaa.lookclipboard.dao;
 import java.util.List;
 
 import com.buaa.lookclipboard.model.Record;
-
-import javafx.scene.input.DataFormat;
+import com.buaa.lookclipboard.model.RecordQueryCondition;
 
 /**
  * 记录数据访问接口
  */
 public interface IRecordDao {
+    /**
+     * 若记录表不存在, 则创建记录表
+     */
+    void createIfNotExists();
+    
     /**
      * 添加记录
      * 
@@ -47,23 +51,18 @@ public interface IRecordDao {
     Record getById(String id);
 
     /**
-     * 通过Like匹配模式获取记录列表
+     * 通过记录查询条件获取记录列表
      * 
+     * @param condition 记录查询条件
      * @return 记录列表
      */
-    List<Record> getByLikePattern(String pattern);
+    List<Record> getByCondition(RecordQueryCondition condition);
 
     /**
-     * 通过数据类型获取记录列表
+     * 通过记录查询条件获取记录数
      * 
-     * @return 记录列表
+     * @param condition 记录查询条件
+     * @return 记录数
      */
-    List<Record> getByDataFormat(DataFormat dataFormat);
-
-    /**
-     * 获取全部记录
-     * 
-     * @return 全部记录
-     */
-    List<Record> getAll();
+    int getCountByCondition(RecordQueryCondition condition);
 }
