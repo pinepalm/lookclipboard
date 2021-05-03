@@ -2,10 +2,10 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-22 21:55:44
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 14:25:29
+ * @LastEditTime: 2021-05-03 22:48:36
  * @Description: 设置服务
  */
-package com.buaa.lookclipboard.service;
+package com.buaa.lookclipboard.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,21 +13,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.util.DoubleUtil;
 import com.buaa.lookclipboard.App;
 import com.buaa.lookclipboard.AppConfig;
+import com.buaa.lookclipboard.service.ISettingsService;
 
 /**
  * 设置服务
  */
-public final class SettingsService {
+public final class SettingsService implements ISettingsService {
+    private final static Lazy<SettingsService> instance = new Lazy<>(() -> new SettingsService());
+
     /**
-     * 设置服务实例
+     * 获取设置服务实例
+     * 
+     * @return 设置服务实例
      */
-    public final static SettingsService instance = new SettingsService();
+    public static SettingsService getInstance() {
+        return instance.getValue();
+    }
 
     private final String SETTINGS_PATH = String.format("%s/settings.xml",
-            AppConfig.instance.getDataFolder().getAbsolutePath());
+            AppConfig.getInstance().getDataFolder().getAbsolutePath());
 
     private final String OPACITY = "opacity";
     private final String ALWAYS_ON_TOP = "alwaysOnTop";
@@ -62,23 +70,21 @@ public final class SettingsService {
     }
 
     /**
-     * 获取不透明度
-     * 
-     * @return 不透明度
+     * {@inheritDoc}
      */
+    @Override
     public double getOpacity() {
         return DoubleUtil.tryParse(props.getProperty(OPACITY), 1.0);
     }
 
     /**
-     * 设置不透明度
-     * 
-     * @param opacity 不透明度
+     * {@inheritDoc}
      */
+    @Override
     public void setOpacity(double opacity) {
         opacity = Math.max(0d, Math.min(opacity, 1d));
-        
-        if(getOpacity() == opacity) {
+
+        if (getOpacity() == opacity) {
             return;
         }
 
@@ -88,21 +94,19 @@ public final class SettingsService {
     }
 
     /**
-     * 获取是否置顶
-     * 
-     * @return 是否置顶
+     * {@inheritDoc}
      */
+    @Override
     public boolean getAlwaysOnTop() {
         return Boolean.parseBoolean(props.getProperty(ALWAYS_ON_TOP));
     }
 
     /**
-     * 设置是否置顶
-     * 
-     * @param alwaysOnTop 是否置顶
+     * {@inheritDoc}
      */
+    @Override
     public void setAlwaysOnTop(boolean alwaysOnTop) {
-        if(getAlwaysOnTop() == alwaysOnTop) {
+        if (getAlwaysOnTop() == alwaysOnTop) {
             return;
         }
 

@@ -2,10 +2,10 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-22 12:52:04
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 12:07:56
+ * @LastEditTime: 2021-05-03 23:37:40
  * @Description: 记录数据访问类
  */
-package com.buaa.lookclipboard.dao;
+package com.buaa.lookclipboard.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -13,6 +13,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.buaa.commons.foundation.Lazy;
+import com.buaa.lookclipboard.dao.DataAccessCenter;
+import com.buaa.lookclipboard.dao.IRecordDao;
 import com.buaa.lookclipboard.model.Record;
 import com.buaa.lookclipboard.model.RecordQueryCondition;
 import com.buaa.lookclipboard.util.DataFormatUtil;
@@ -23,16 +26,26 @@ import com.buaa.lookclipboard.util.ObjectUtil;
  * 记录数据访问类
  */
 public final class RecordDao implements IRecordDao {
+    private final static Lazy<RecordDao> instance = new Lazy<>(() -> new RecordDao());
+
     /**
-     * 记录数据访问类实例
+     * 获取记录数据访问类实例
+     * 
+     * @return 记录数据访问类实例
      */
-    public final static RecordDao instance = new RecordDao();
+    public static RecordDao getInstance() {
+        return instance.getValue();
+    }
+
+    private RecordDao() {
+        
+    }
 
     private int manipulateRecords(String sql) {
         int rowsCount = 0;
 
         try {
-            Statement statement = DataAccessCenter.createStatement();
+            Statement statement = DataAccessCenter.getInstance().createStatement();
             rowsCount = statement.executeUpdate(sql);
             statement.close();
         } catch (Exception e) {
@@ -46,7 +59,7 @@ public final class RecordDao implements IRecordDao {
         List<Record> recordList = new ArrayList<>();
 
         try {
-            Statement statement = DataAccessCenter.createStatement();
+            Statement statement = DataAccessCenter.getInstance().createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {
@@ -76,7 +89,7 @@ public final class RecordDao implements IRecordDao {
         int rowsCount = 0;
 
         try {
-            Statement statement = DataAccessCenter.createStatement();
+            Statement statement = DataAccessCenter.getInstance().createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
             while (rs.next()) {

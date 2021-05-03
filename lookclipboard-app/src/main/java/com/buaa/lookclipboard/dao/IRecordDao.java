@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-05-01 23:47:22
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 01:31:38
+ * @LastEditTime: 2021-05-03 22:29:53
  * @Description: 记录数据访问接口
  */
 package com.buaa.lookclipboard.dao;
@@ -15,7 +15,7 @@ import com.buaa.lookclipboard.model.RecordQueryCondition;
 /**
  * 记录数据访问接口
  */
-public interface IRecordDao {
+public interface IRecordDao extends IDataAccessObject {
     /**
      * 若记录表不存在, 则创建记录表
      */

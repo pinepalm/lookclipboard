@@ -2,10 +2,10 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-21 20:35:05
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 12:10:36
+ * @LastEditTime: 2021-05-03 22:55:06
  * @Description: 剪贴板服务
  */
-package com.buaa.lookclipboard.service;
+package com.buaa.lookclipboard.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +14,10 @@ import java.util.ServiceLoader;
 import java.util.function.BiFunction;
 
 import com.buaa.appmodel.core.datatransfer.Clipboard;
+import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.foundation.Ref;
 import com.buaa.lookclipboard.App;
-import com.buaa.lookclipboard.dao.RecordDao;
+import com.buaa.lookclipboard.dao.impl.RecordDao;
 import com.buaa.lookclipboard.model.ActionResult;
 import com.buaa.lookclipboard.model.IActionResult;
 import com.buaa.lookclipboard.model.Record;
@@ -25,6 +26,7 @@ import com.buaa.lookclipboard.model.RecordQueryCondition;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
+import com.buaa.lookclipboard.service.IClipboardService;
 import com.buaa.lookclipboard.service.core.IClipboardExtension;
 import com.buaa.lookclipboard.util.ActionResultUtil;
 import com.buaa.lookclipboard.util.ExtensionUtil;
@@ -34,11 +36,17 @@ import com.buaa.lookclipboard.util.ObjectUtil;
 /**
  * 剪贴板服务
  */
-public final class ClipboardService {
+public final class ClipboardService implements IClipboardService {
+    private final static Lazy<ClipboardService> instance = new Lazy<>(() -> new ClipboardService());
+
     /**
-     * 剪贴板服务实例
+     * 获取剪贴板服务实例
+     * 
+     * @return 剪贴板服务实例
      */
-    public final static ClipboardService instance = new ClipboardService();
+    public static ClipboardService getInstance() {
+        return instance.getValue();
+    }
 
     private final List<IClipboardExtension> extensions = new ArrayList<>();
 
@@ -75,7 +83,7 @@ public final class ClipboardService {
                     if (ActionResultUtil.isSuccess(result)) {
                         record.setContent(outContent.get());
                         lastRecord = record;
-                        RecordDao.instance.add(record);
+                        RecordDao.getInstance().add(record);
 
                         String recordJson = JsonUtil.stringify(record);
                         if (recordJson != null) {
@@ -92,7 +100,7 @@ public final class ClipboardService {
     }
 
     private String handle(String id, BiFunction<Record, IClipboardExtension, String> function) {
-        Record record = RecordDao.instance.getById(id);
+        Record record = RecordDao.getInstance().getById(id);
         if (record != null) {
             for (IClipboardExtension extension : extensions) {
                 if (record.getDataFormat().equals(extension.getDataFormat())) {
@@ -105,11 +113,9 @@ public final class ClipboardService {
     }
 
     /**
-     * 复制记录内容
-     * 
-     * @param id 记录ID
-     * @return 操作结果JSON字符串
+     * {@inheritDoc}
      */
+    @Override
     public String copy(String id) {
         return handle(id, (record, extension) -> {
             isCopying = true;
@@ -128,17 +134,15 @@ public final class ClipboardService {
     }
 
     /**
-     * 删除记录
-     * 
-     * @param id 记录ID
-     * @return 操作结果JSON字符串
+     * {@inheritDoc}
      */
+    @Override
     public String delete(String id) {
         return handle(id, (record, extension) -> {
             IActionResult result = extension.onDeleted(record.asReadOnly());
 
             if (ActionResultUtil.isSuccess(result)) {
-                RecordDao.instance.delete(record.getID());
+                RecordDao.getInstance().delete(record.getID());
             }
 
             return JsonUtil.stringify(result);
@@ -146,12 +150,9 @@ public final class ClipboardService {
     }
 
     /**
-     * 编辑记录内容
-     * 
-     * @param id          记录ID
-     * @param editContent 编辑内容
-     * @return 操作结果JSON字符串
+     * {@inheritDoc}
      */
+    @Override
     public String edit(String id, Object editContent) {
         return handle(id, (record, extension) -> {
             Ref<String> outContent = new Ref<>();
@@ -159,7 +160,7 @@ public final class ClipboardService {
 
             if (ActionResultUtil.isSuccess(result)) {
                 record.setContent(outContent.get());
-                RecordDao.instance.update(record);
+                RecordDao.getInstance().update(record);
             }
 
             return JsonUtil.stringify(result);
@@ -167,44 +168,37 @@ public final class ClipboardService {
     }
 
     /**
-     * 设置是否固定
-     * 
-     * @param id       记录ID
-     * @param isPinned 是否固定
-     * @return 操作结果JSON字符串
+     * {@inheritDoc}
      */
+    @Override
     public String setIsPinned(String id, boolean isPinned) {
-        Record record = RecordDao.instance.getById(id);
+        Record record = RecordDao.getInstance().getById(id);
 
         if (record != null) {
             record.setIsPinned(isPinned);
-            RecordDao.instance.update(record);
+            RecordDao.getInstance().update(record);
         }
 
         return JsonUtil.stringify(new ActionResult(null, 200));
     }
 
     /**
-     * 通过记录查询条件获取记录列表
-     * 
-     * @param condition 记录查询条件JSON字符串
-     * @return 记录列表
+     * {@inheritDoc}
      */
+    @Override
     public String getRecordsByCondition(String conditionJSON) {
         RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class);
-        List<Record> recordList = condition != null ? RecordDao.instance.getByCondition(condition) : null;
+        List<Record> recordList = condition != null ? RecordDao.getInstance().getByCondition(condition) : null;
         return JsonUtil.stringify(recordList);
     }
 
     /**
-     * 通过记录查询条件获取记录数
-     * 
-     * @param conditionJSON 记录查询条件JSON字符串
-     * @return 记录数
+     * {@inheritDoc}
      */
+    @Override
     public int getRecordsCountByCondition(String conditionJSON) {
         RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class);
-        int recordsCount = condition != null ? RecordDao.instance.getCountByCondition(condition) : 0;
+        int recordsCount = condition != null ? RecordDao.getInstance().getCountByCondition(condition) : 0;
         return recordsCount;
     }
 }
