@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-22 21:55:44
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 22:48:36
+ * 
+ * @LastEditTime: 2021-05-07 11:58:26
+ * 
  * @Description: 设置服务
  */
 package com.buaa.lookclipboard.service.impl;
@@ -23,6 +27,12 @@ import com.buaa.lookclipboard.service.ISettingsService;
  * 设置服务
  */
 public final class SettingsService implements ISettingsService {
+    private final static String SETTINGS_PATH = String.format("%s/settings.xml",
+            AppConfig.getInstance().getAppFolder().getAbsolutePath());
+    private final static String APP_SETTINGS = "AppSettings";
+    private final static String OPACITY = "opacity";
+    private final static String ALWAYS_ON_TOP = "alwaysOnTop";
+
     private final static Lazy<SettingsService> instance = new Lazy<>(() -> new SettingsService());
 
     /**
@@ -33,12 +43,6 @@ public final class SettingsService implements ISettingsService {
     public static SettingsService getInstance() {
         return instance.getValue();
     }
-
-    private final String SETTINGS_PATH = String.format("%s/settings.xml",
-            AppConfig.getInstance().getDataFolder().getAbsolutePath());
-
-    private final String OPACITY = "opacity";
-    private final String ALWAYS_ON_TOP = "alwaysOnTop";
 
     private final File SETTINGS_FILE = new File(SETTINGS_PATH);
 
@@ -62,7 +66,7 @@ public final class SettingsService implements ISettingsService {
     private void saveProps() {
         try {
             FileOutputStream settingsOutput = new FileOutputStream(SETTINGS_FILE);
-            props.storeToXML(settingsOutput, "AppSettings");
+            props.storeToXML(settingsOutput, APP_SETTINGS);
             settingsOutput.close();
         } catch (IOException e) {
             e.printStackTrace();

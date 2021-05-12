@@ -1,14 +1,19 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-05-01 23:57:34
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 23:37:00
+ * 
+ * @LastEditTime: 2021-05-06 19:09:34
+ * 
  * @Description: 数据访问中心
  */
 package com.buaa.lookclipboard.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
 import java.sql.Statement;
@@ -21,6 +26,12 @@ import com.buaa.lookclipboard.AppConfig;
  * 数据访问中心
  */
 public final class DataAccessCenter implements IClosable {
+    private final static String JDBC_DRIVER = "org.sqlite.JDBC";
+    private final static String JDBC_SCHEME = "jdbc:sqlite";
+    private final static String DATABASE_PATH =
+            String.format("%s/record.db", AppConfig.getInstance().getAppFolder().getAbsolutePath());
+    private final static String DATABASE_URL = String.format("%s://%s", JDBC_SCHEME, DATABASE_PATH);
+
     private final static Lazy<DataAccessCenter> instance = new Lazy<>(() -> new DataAccessCenter());
 
     /**
@@ -31,12 +42,6 @@ public final class DataAccessCenter implements IClosable {
     public static DataAccessCenter getInstance() {
         return instance.getValue();
     }
-
-    private final String JDBC_DRIVER = "org.sqlite.JDBC";
-    private final String JDBC_SCHEME = "jdbc:sqlite";
-    private final String DATABASE_PATH = String.format("%s/record.db",
-            AppConfig.getInstance().getDataFolder().getAbsolutePath());
-    private final String DATABASE_URL = String.format("%s://%s", JDBC_SCHEME, DATABASE_PATH);
 
     private Connection connection;
 
@@ -74,6 +79,21 @@ public final class DataAccessCenter implements IClosable {
         }
 
         return connection.createStatement();
+    }
+
+    /**
+     * 创建预编译语句对象
+     * 
+     * @param sql Sql语句
+     * @return 预编译语句对象
+     * @throws SQLException
+     */
+    public PreparedStatement prepareStatement(String sql) throws SQLException {
+        if (connection == null) {
+            return null;
+        }
+
+        return connection.prepareStatement(sql);
     }
 
     /**

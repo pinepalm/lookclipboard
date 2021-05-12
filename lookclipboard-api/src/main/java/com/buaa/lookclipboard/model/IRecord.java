@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-23 14:28:05
+ * 
  * @LastEditors: Zhe Chen
+ * 
  * @LastEditTime: 2021-04-30 14:35:38
+ * 
  * @Description: 记录接口
  */
 package com.buaa.lookclipboard.model;

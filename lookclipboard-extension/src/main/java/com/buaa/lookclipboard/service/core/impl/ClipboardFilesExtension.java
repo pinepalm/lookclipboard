@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-21 21:13:30
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-30 20:21:41
+ * 
+ * @LastEditTime: 2021-05-06 17:18:55
+ * 
  * @Description: 剪贴板文件扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
@@ -12,8 +16,6 @@ import java.util.List;
 
 import com.buaa.commons.foundation.Ref;
 import com.buaa.lookclipboard.model.IRecord;
-import com.buaa.lookclipboard.model.ActionResult;
-import com.buaa.lookclipboard.model.IActionResult;
 
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -22,36 +24,53 @@ import javafx.scene.input.DataFormat;
  * 剪贴板文件扩展
  */
 public final class ClipboardFilesExtension extends ClipboardExtension<List<File>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEqualInternal(IRecord lastRecord, List<File> content) {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected IActionResult onReceivedInternal(IRecord newRecord, List<File> content, Ref<String> outContent) {
+    protected void onReceivedInternal(IRecord newRecord, List<File> content, Ref<String> outContent)
+            throws Exception {
         outContent.set(Integer.toString(content.size()));
-        return new ActionResult(null, 200);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DataFormat getDataFormat() {
         return DataFormat.FILES;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IActionResult onCopied(IRecord record, Ref<ClipboardContent> outContent) {
-        return new ActionResult(null, 400);
+    public void onCopied(IRecord record, Ref<ClipboardContent> outContent) throws Exception {
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IActionResult onEdited(IRecord record, Object editContent, Ref<String> outContent) {
+    public void onEdited(IRecord record, Object editContent, Ref<String> outContent)
+            throws Exception {
         outContent.set(editContent.toString());
-
-        return new ActionResult(null, 200);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IActionResult onDeleted(IRecord record) {
-        return new ActionResult(null, 200);
+    public void onDeleted(IRecord record) throws Exception {
+
     }
 }

@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-30 10:45:59
+ * 
  * @LastEditors: Zhe Chen
+ * 
  * @LastEditTime: 2021-04-30 14:58:17
+ * 
  * @Description: 记录标签
  */
 package com.buaa.lookclipboard.model;

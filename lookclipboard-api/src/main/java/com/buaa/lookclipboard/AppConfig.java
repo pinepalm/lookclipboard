@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-05-02 00:12:53
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 22:53:24
+ * 
+ * @LastEditTime: 2021-05-07 14:40:44
+ * 
  * @Description: 应用配置
  */
 package com.buaa.lookclipboard;
@@ -11,11 +15,17 @@ import java.io.File;
 
 import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.util.StorageUtil;
+import net.harawata.appdirs.AppDirsFactory;
 
 /**
  * 应用配置
  */
 public final class AppConfig {
+    private final static String APP_AUTHOR = "buaa";
+    private final static String APP_NAME = "lookclipboard";
+    private final static String APP_DISPLAY_NAME = "LookClipboard";
+    private final static String APP_DATA = "appdata";
+
     private final static Lazy<AppConfig> instance = new Lazy<>(() -> new AppConfig());
 
     /**
@@ -31,24 +41,26 @@ public final class AppConfig {
 
     }
 
+    public String getAuthor() {
+        return APP_AUTHOR;
+    }
+
     public String getName() {
-        return "lookclipboard";
+        return APP_NAME;
     }
 
     public String getDisplayName() {
-        return "LookClipboard";
+        return APP_DISPLAY_NAME;
     }
 
-    public File getDataFolder() {
-        try {
-            String path = String.format("%s/%s", StorageUtil.getLocalAppDataFolderPath(), getName());
-            File dataFolder = new File(path);
+    public File getAppFolder() {
+        String path = AppDirsFactory.getInstance().getUserDataDir(getName(), null, getAuthor());
+        return StorageUtil.getFolder(path, true, false);
+    }
 
-            return dataFolder.isDirectory() || dataFolder.mkdir() ? dataFolder : null;
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
+    public File getAppDataFolder() {
+        File appFolder = getAppFolder();
+        String path = String.format("%s/%s", appFolder.getAbsolutePath(), APP_DATA);
+        return StorageUtil.getFolder(path, true, false);
     }
 }

@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-22 12:48:03
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 17:21:50
+ * 
+ * @LastEditTime: 2021-05-07 00:15:25
+ * 
  * @Description: 记录
  */
 package com.buaa.lookclipboard.model;
@@ -16,8 +20,9 @@ import java.util.Random;
 
 import com.buaa.commons.foundation.Lazy;
 import com.buaa.lookclipboard.util.LocalDateTimeUtil;
-import com.buaa.lookclipboard.util.Md5Util;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javafx.scene.input.DataFormat;
 
@@ -35,12 +40,12 @@ public class Record implements IRecord {
      */
     public static Record createNow(DataFormat dataFormat) {
         LocalDateTime createdTime = LocalDateTime.now(ZoneOffset.UTC);
-        String id = Md5Util.md5(createdTime.toString() + random.nextInt());
+        String id = DigestUtils.md5Hex(createdTime.toString() + random.nextInt());
         Record record = new Record();
         record.setID(id);
         record.setDataFormat(dataFormat);
         record.setCreatedTime(createdTime);
-        
+
         return record;
     }
 

@@ -1,11 +1,15 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-02 20:41:06
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-04-26 13:09:33
+ * 
+ * @LastEditTime: 2021-05-11 12:25:10
+ * 
  * @Description: 事件类
  */
-package com.buaa.commons.event;
+package com.buaa.commons.lang.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +18,14 @@ import java.util.List;
  * 事件类
  */
 public class Event<T extends EventArgs> {
-    private List<EventHandler<T>> handlers = new ArrayList<>();
+    private List<IEventHandler<T>> handlers = new ArrayList<>();
 
     /**
      * 添加事件处理器
      * 
      * @param handler 处理器
      */
-    public void addEventHandler(EventHandler<T> handler) {
+    public void addEventHandler(IEventHandler<T> handler) {
         handlers.add(handler);
     }
 
@@ -30,7 +34,7 @@ public class Event<T extends EventArgs> {
      * 
      * @param handler 处理器
      */
-    public void removeEventHandler(EventHandler<T> handler) {
+    public void removeEventHandler(IEventHandler<T> handler) {
         handlers.remove(handler);
     }
 

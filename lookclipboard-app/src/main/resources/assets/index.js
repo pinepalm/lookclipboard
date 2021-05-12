@@ -2,7 +2,7 @@
  * @Author: Zhe Chen
  * @Date: 2021-04-22 19:28:51
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 23:46:20
+ * @LastEditTime: 2021-05-12 16:54:24
  * @Description: index.js
  */
 function addRecord(recordJson) {
@@ -20,7 +20,12 @@ function testSetAlwaysOnTop() {
 }
 
 function testGetAllRecords() {
-    var condition = {}
-    var recordsCount = clipboardService.getRecordsCountByCondition(JSON.stringify(condition));
-    document.getElementById("testGetAllRecords").innerHTML = recordsCount;
+    var condition = {
+        dataFormats: [
+            ["text/plain"]
+        ]
+    };
+    var result = JSON.parse(clipboardService.getRecordsCountByCondition(JSON.stringify(condition)));
+    document.getElementById("parsed").innerHTML = result.data;
+    document.getElementById("raw").innerHTML = JSON.stringify(result);
 }

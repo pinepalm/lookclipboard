@@ -28,6 +28,16 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    <groupId>net.harawata</groupId>
+    <artifactId>appdirs</artifactId>
+    <version>1.2.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>
+</dependency>
   </dependencies>
 
   <build>

@@ -1,29 +1,27 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-05-03 00:51:29
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 13:41:53
+ * 
+ * @LastEditTime: 2021-05-06 23:37:30
+ * 
  * @Description: 记录查询条件
  */
 package com.buaa.lookclipboard.model;
 
 import java.time.LocalDateTime;
-import java.util.StringJoiner;
 
-import com.buaa.lookclipboard.util.DataFormatUtil;
-import com.buaa.lookclipboard.util.JsonUtil;
 import com.buaa.lookclipboard.util.LocalDateTimeUtil;
-import com.buaa.lookclipboard.util.ObjectUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import javafx.scene.input.DataFormat;
 
 /**
  * 记录查询条件
  */
 public class RecordQueryCondition {
     private String[][] dataFormats;
-    private String contentPattern;
+    private String queryContent;
     @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
     private LocalDateTime startTime;
     @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
@@ -34,6 +32,7 @@ public class RecordQueryCondition {
 
     /**
      * 获取数据类型JSON字符串数组
+     * 
      * @return 数据类型JSON字符串数组
      */
     public String[][] getDataFormats() {
@@ -42,6 +41,7 @@ public class RecordQueryCondition {
 
     /**
      * 设置数据类型JSON字符串数组
+     * 
      * @param dataFormats 数据类型JSON字符串数组
      */
     public void setDataFormats(String[][] dataFormats) {
@@ -49,23 +49,26 @@ public class RecordQueryCondition {
     }
 
     /**
-     * 获取内容匹配模式字符串
-     * @return 内容匹配模式字符串
+     * 获取查询内容
+     * 
+     * @return 查询内容
      */
-    public String getContentPattern() {
-        return contentPattern;
+    public String getQueryContent() {
+        return queryContent;
     }
 
     /**
-     * 设置内容匹配模式字符串
-     * @param contentPattern 内容匹配模式字符串
+     * 设置查询内容
+     * 
+     * @param queryContent 查询内容
      */
-    public void setContentPattern(String contentPattern) {
-        this.contentPattern = contentPattern;
+    public void setQueryContent(String queryContent) {
+        this.queryContent = queryContent;
     }
 
     /**
      * 获取开始时间(创建时间)
+     * 
      * @return 开始时间(创建时间)
      */
     public LocalDateTime getStartTime() {
@@ -74,6 +77,7 @@ public class RecordQueryCondition {
 
     /**
      * 设置开始时间(创建时间)
+     * 
      * @param startTime 开始时间(创建时间)
      */
     public void setStartTime(LocalDateTime startTime) {
@@ -82,6 +86,7 @@ public class RecordQueryCondition {
 
     /**
      * 获取结束时间(创建时间)
+     * 
      * @return 结束时间(创建时间)
      */
     public LocalDateTime getEndTime() {
@@ -90,6 +95,7 @@ public class RecordQueryCondition {
 
     /**
      * 设置结束时间(创建时间)
+     * 
      * @param endTime 结束时间(创建时间)
      */
     public void setEndTime(LocalDateTime endTime) {
@@ -98,6 +104,7 @@ public class RecordQueryCondition {
 
     /**
      * 获取是否固定
+     * 
      * @return 是否固定
      */
     public Boolean getIsPinned() {
@@ -106,6 +113,7 @@ public class RecordQueryCondition {
 
     /**
      * 设置是否固定
+     * 
      * @param isPinned 是否固定
      */
     public void setIsPinned(Boolean isPinned) {
@@ -114,6 +122,7 @@ public class RecordQueryCondition {
 
     /**
      * 获取每页记录数
+     * 
      * @return 每页记录数
      */
     public Integer getPageSize() {
@@ -122,6 +131,7 @@ public class RecordQueryCondition {
 
     /**
      * 设置每页记录数
+     * 
      * @param pageSize 每页记录数
      */
     public void setPageSize(Integer pageSize) {
@@ -130,6 +140,7 @@ public class RecordQueryCondition {
 
     /**
      * 获取页码[1, ...]
+     * 
      * @return 页码[1, ...]
      */
     public Integer getPageIndex() {
@@ -138,75 +149,10 @@ public class RecordQueryCondition {
 
     /**
      * 设置页码[1, ...]
+     * 
      * @param pageIndex 页码[1, ...]
      */
     public void setPageIndex(Integer pageIndex) {
         this.pageIndex = pageIndex;
-    }
-
-    /**
-     * 将记录查询条件转为Sql字符串
-     * <blockquote>
-     * <pre>
-     * [where (...)] [limit ? offest ?] order by createdTime desc
-     * </pre>
-     * </blockquote>
-     */
-    @Override
-    public String toString() {
-        StringJoiner joiner = new StringJoiner(" and ");
-
-        String[][] dataFormats = getDataFormats();
-        if (dataFormats != null) {
-            StringJoiner dataFormatsJoiner = new StringJoiner(" or ");
-
-            for (String[] dataFormatString : dataFormats) {
-                DataFormat dataFormat = DataFormatUtil.fromJSON(JsonUtil.stringify(dataFormatString));
-                if (dataFormat != null) {
-                    dataFormatsJoiner.add(String.format("dataFormat = %s",
-                            ObjectUtil.asSqlString(DataFormatUtil.toJSON(dataFormat))));
-                }
-            }
-
-            joiner.add(String.format("(%s)", dataFormatsJoiner.toString()));
-        }
-
-        String contentPattern = getContentPattern();
-        if (contentPattern != null) {
-            joiner.add(String.format("(content like %s)", ObjectUtil.asSqlString(contentPattern)));
-        }
-
-        LocalDateTime startTime = getStartTime();
-        if (startTime != null) {
-            joiner.add(String.format("(createdTime >= %s)", ObjectUtil
-                    .asSqlString(LocalDateTimeUtil.format(startTime, LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS))));
-        }
-
-        LocalDateTime endTime = getEndTime();
-        if (endTime != null) {
-            joiner.add(String.format("(createdTime <= %s)", ObjectUtil
-                    .asSqlString(LocalDateTimeUtil.format(endTime, LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS))));
-        }
-
-        Boolean isPinned = getIsPinned();
-        if (isPinned != null) {
-            joiner.add(String.format("(isPinned = %d)", isPinned ? 1 : 0));
-        }
-
-        String baseSql = joiner.toString();
-        if (!baseSql.isEmpty()) {
-            baseSql = String.format("where (%s)", baseSql);
-        }
-
-        Integer pageSize = getPageSize();
-        Integer pageIndex = getPageIndex();
-        if (pageSize != null && pageIndex != null) {
-            int newPageSize = Math.max(pageSize, 1);
-            int newPageIndex = Math.max(pageIndex, 1);
-            baseSql = String.format("%s limit %d offest %d", baseSql, newPageSize, newPageIndex - 1);
-        }
-
-        baseSql = String.format("%s order by createdTime desc", baseSql);
-        return baseSql;
     }
 }

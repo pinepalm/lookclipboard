@@ -1,11 +1,17 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-05-02 15:07:48
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 15:18:39
+ * 
+ * @LastEditTime: 2021-05-06 23:17:36
+ * 
  * @Description: 数据类型工具类
  */
 package com.buaa.lookclipboard.util;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import javafx.scene.input.DataFormat;
 
@@ -36,7 +42,7 @@ public final class DataFormatUtil {
      */
     public static DataFormat fromJSON(String json) {
         String[] identifiers = JsonUtil.parse(json, String[].class);
-        if (identifiers == null || identifiers.length < 1) {
+        if (ArrayUtils.isEmpty(identifiers)) {
             return null;
         }
 

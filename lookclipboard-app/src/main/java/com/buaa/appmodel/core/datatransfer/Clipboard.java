@@ -1,14 +1,18 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-21 19:31:45
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-02 13:48:13
+ * 
+ * @LastEditTime: 2021-05-11 12:25:31
+ * 
  * @Description: 剪贴板
  */
 package com.buaa.appmodel.core.datatransfer;
 
-import com.buaa.commons.event.Event;
-import com.buaa.commons.event.EventArgs;
+import com.buaa.commons.lang.event.Event;
+import com.buaa.commons.lang.event.EventArgs;
 import com.sun.glass.ui.ClipboardAssistance;
 
 import javafx.scene.input.ClipboardContent;
@@ -18,15 +22,16 @@ import javafx.scene.input.DataFormat;
  * 剪贴板
  */
 public final class Clipboard {
-    private final static javafx.scene.input.Clipboard systemClipboard = javafx.scene.input.Clipboard
-            .getSystemClipboard();
+    private final static javafx.scene.input.Clipboard systemClipboard =
+            javafx.scene.input.Clipboard.getSystemClipboard();
 
-    private final static ClipboardAssistance monitor = new ClipboardAssistance(com.sun.glass.ui.Clipboard.SYSTEM) {
-        @Override
-        public void contentChanged() {
-            contentChanged.invoke(null, null);
-        }
-    };
+    private final static ClipboardAssistance monitor =
+            new ClipboardAssistance(com.sun.glass.ui.Clipboard.SYSTEM) {
+                @Override
+                public void contentChanged() {
+                    contentChanged.invoke(null, null);
+                }
+            };
 
     /**
      * 内容更改事件

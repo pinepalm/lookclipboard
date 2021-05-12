@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-05-03 22:30:56
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 22:40:23
+ * 
+ * @LastEditTime: 2021-05-06 22:32:35
+ * 
  * @Description: 剪贴板服务接口
  */
 package com.buaa.lookclipboard.service;
@@ -26,6 +30,21 @@ public interface IClipboardService extends IAppService {
      * @return 操作结果JSON字符串
      */
     String delete(String id);
+
+    /**
+     * 删除批量记录
+     * 
+     * @param idsJSON 记录ID列表JSON字符串
+     * @return 操作结果JSON字符串
+     */
+    String deleteBatch(String idsJSON);
+
+    /**
+     * 删除全部记录
+     * 
+     * @return 操作结果JSON字符串
+     */
+    String deleteAll();
 
     /**
      * 编辑记录内容
@@ -59,5 +78,5 @@ public interface IClipboardService extends IAppService {
      * @param conditionJSON 记录查询条件JSON字符串
      * @return 记录数
      */
-    int getRecordsCountByCondition(String conditionJSON);
+    String getRecordsCountByCondition(String conditionJSON);
 }

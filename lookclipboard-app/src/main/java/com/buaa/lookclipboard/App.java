@@ -1,8 +1,12 @@
 /*
  * @Author: Zhe Chen
+ * 
  * @Date: 2021-04-21 14:04:41
+ * 
  * @LastEditors: Zhe Chen
- * @LastEditTime: 2021-05-03 23:48:55
+ * 
+ * @LastEditTime: 2021-05-07 23:12:05
+ * 
  * @Description: 应用
  */
 package com.buaa.lookclipboard;
@@ -13,7 +17,6 @@ import com.buaa.lookclipboard.dao.DataAccessCenter;
 import com.buaa.lookclipboard.dao.impl.RecordDao;
 import com.buaa.lookclipboard.service.impl.ClipboardService;
 import com.buaa.lookclipboard.service.impl.SettingsService;
-
 import javafx.application.Application;
 import javafx.concurrent.Worker.State;
 import javafx.scene.Scene;
@@ -68,11 +71,11 @@ public class App extends Application {
             if (newState.equals(State.SUCCEEDED)) {
                 try {
                     DataAccessCenter.getInstance().open();
+                    RecordDao.getInstance().createIfNotExists();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(1);
                 }
-                RecordDao.getInstance().createIfNotExists();
 
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("clipboardService", ClipboardService.getInstance());
@@ -84,7 +87,8 @@ public class App extends Application {
         StackPane layoutRoot = new StackPane(webView);
         Scene scene = new Scene(layoutRoot);
 
-        primaryStage.getIcons().add(new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
+        primaryStage.getIcons().add(
+                new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
         primaryStage.setTitle(AppConfig.getInstance().getDisplayName());
         primaryStage.setOpacity(SettingsService.getInstance().getOpacity());
         primaryStage.setAlwaysOnTop(SettingsService.getInstance().getAlwaysOnTop());
@@ -96,7 +100,8 @@ public class App extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.initOwner(primaryStage);
-            ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons().add(primaryStage.getIcons().get(0));
+            ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
+                    .add(primaryStage.getIcons().get(0));
             alert.setTitle("提示");
             alert.setHeaderText(null);
             alert.setContentText("确认要退出吗?");
