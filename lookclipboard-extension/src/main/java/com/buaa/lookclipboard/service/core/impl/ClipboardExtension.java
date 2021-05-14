@@ -5,12 +5,13 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 17:15:38
+ * @LastEditTime: 2021-05-14 21:46:58
  * 
  * @Description: 剪贴板扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
+import java.util.Objects;
 import com.buaa.commons.foundation.Ref;
 import com.buaa.lookclipboard.model.IRecord;
 import com.buaa.lookclipboard.service.core.IClipboardExtension;
@@ -39,14 +40,17 @@ public abstract class ClipboardExtension<T> implements IClipboardExtension {
      * @param outContent 处理后内容
      * @throws Exception
      */
-    protected abstract void onReceivedInternal(IRecord newRecord, T content, Ref<String> outContent)
-            throws Exception;
+    protected abstract void onReceivedInternal(IRecord newRecord, T content, Ref<String> outContent) throws Exception;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean isEqual(IRecord lastRecord, Object content) {
+        if (lastRecord == null || !Objects.equals(lastRecord.getDataFormat(), getDataFormat())) {
+            return false;
+        }
+
         return isEqualInternal(lastRecord, (T) content);
     }
 
@@ -54,8 +58,7 @@ public abstract class ClipboardExtension<T> implements IClipboardExtension {
      * {@inheritDoc}
      */
     @Override
-    public void onReceived(IRecord newRecord, Object content, Ref<String> outContent)
-            throws Exception {
+    public void onReceived(IRecord newRecord, Object content, Ref<String> outContent) throws Exception {
         onReceivedInternal(newRecord, (T) content, outContent);
     }
 }

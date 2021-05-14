@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 16:16:47
+ * @LastEditTime: 2021-05-13 13:37:10
  * 
  * @Description: 异常处理器
  */
@@ -21,11 +21,12 @@ import java.util.function.BiConsumer;
  */
 public final class ExceptionHandler<E extends Exception, T extends ITryContext> {
     private final BiConsumer<E, T> handler;
-    private final Class<E> exceptionType;
+    private final Class<? extends E>[] exceptionTypes;
 
-    public ExceptionHandler(BiConsumer<E, T> handler, Class<E> exceptionType) {
+    @SafeVarargs
+    public ExceptionHandler(BiConsumer<E, T> handler, Class<? extends E>... exceptionTypes) {
         this.handler = handler;
-        this.exceptionType = exceptionType;
+        this.exceptionTypes = exceptionTypes;
     }
 
     /**
@@ -38,12 +39,12 @@ public final class ExceptionHandler<E extends Exception, T extends ITryContext> 
     }
 
     /**
-     * 获取异常类型
+     * 获取异常类型数组
      * 
-     * @return 异常类型
+     * @return 异常类型数组
      */
-    public Class<E> getExceptionType() {
-        return exceptionType;
+    public Class<? extends E>[] getExceptionTypes() {
+        return exceptionTypes;
     }
 
     /**
@@ -53,8 +54,16 @@ public final class ExceptionHandler<E extends Exception, T extends ITryContext> 
      * @return 是否能够处理异常
      */
     public boolean canHandle(Exception e) {
-        Class<E> exceptionType = getExceptionType();
-        return exceptionType != null ? exceptionType.isInstance(e) : false;
+        Class<? extends E>[] exceptionTypes = getExceptionTypes();
+        if (exceptionTypes != null) {
+            for (Class<? extends E> exceptionType : exceptionTypes) {
+                if (exceptionType != null && exceptionType.isInstance(e)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

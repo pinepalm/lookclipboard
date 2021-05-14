@@ -5,17 +5,21 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 16:40:53
+ * @LastEditTime: 2021-05-14 21:49:05
  * 
  * @Description: 剪贴板图像扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
 import java.io.File;
+import java.util.Objects;
 import com.buaa.commons.foundation.Ref;
+import com.buaa.commons.util.StringUtil;
+import com.buaa.commons.util.javafx.ImageUtil;
 import com.buaa.lookclipboard.AppConfig;
 import com.buaa.lookclipboard.model.IRecord;
-
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -24,28 +28,52 @@ import javafx.scene.input.DataFormat;
  * 剪贴板图像扩展
  */
 public final class ClipboardImageExtension extends ClipboardExtension<Image> {
-    private final static String IMAGE_DATA = "imagedata";
+    private final static String IMAGE_DATA = "img";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isEqualInternal(IRecord lastRecord, Image content) {
+    private File getAppImageDataFolder() {
         File appDataFolder = AppConfig.getInstance().getAppDataFolder();
-        if (appDataFolder == null) {
-            return false;
-        }
+        File imageDataFolder = FileUtils.getFile(appDataFolder, IMAGE_DATA);
+        return imageDataFolder;
+    }
 
-        return false; // 待完善...
+    private File getAppImageDataFile(String name) {
+        return FileUtils.getFile(getAppImageDataFolder(), name);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void onReceivedInternal(IRecord newRecord, Image content, Ref<String> outContent)
-            throws Exception {
-        outContent.set(Double.toString(content.getHeight()));
+    public boolean isEqualInternal(IRecord lastRecord, Image content) {
+        if (lastRecord.getContent() == null && content == null) {
+            return true;
+        }
+
+        try {
+            File imageFile = getAppImageDataFile(lastRecord.getContent());
+            Image lastImage = ImageUtil.read(imageFile);
+            return ImageUtil.deepEquals(lastImage, content);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onReceivedInternal(IRecord newRecord, Image content, Ref<String> outContent) throws Exception {
+        String imageFileName = StringUtil.interpolate(
+                "${id}.${formatName}", new Object[][] 
+                {
+                    {"id", newRecord.getID()}, 
+                    {"formatName", ImageUtil.PNG}
+                });
+        File imageFile = getAppImageDataFile(imageFileName);
+
+        ImageUtil.write(content, imageFile, ImageUtil.PNG);
+        outContent.set(imageFileName);
     }
 
     /**
@@ -61,15 +89,25 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
      */
     @Override
     public void onCopied(IRecord record, Ref<ClipboardContent> outContent) throws Exception {
-        throw new UnsupportedOperationException();
+        File imageFile = getAppImageDataFile(record.getContent());
+        Image image = ImageUtil.read(imageFile);
+
+        ClipboardContent content = new ClipboardContent();
+        content.putImage(image);
+        outContent.set(content);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onEdited(IRecord record, Object editContent, Ref<String> outContent)
-            throws Exception {
+    public void onEdited(IRecord record, Object editContent, Ref<String> outContent) throws Exception {
+        Image image = ImageUtil.fromBase64(Objects.toString(editContent, StringUtils.EMPTY));
+        File imageFile = getAppImageDataFile(record.getContent());
+
+        ImageUtil.write(image, imageFile, ImageUtil.PNG);
+
+        // 内容保持不变
         outContent.set(record.getContent());
     }
 
@@ -78,6 +116,7 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
      */
     @Override
     public void onDeleted(IRecord record) throws Exception {
-
+        File imageFile = getAppImageDataFile(record.getContent());
+        FileUtils.forceDelete(imageFile);
     }
 }

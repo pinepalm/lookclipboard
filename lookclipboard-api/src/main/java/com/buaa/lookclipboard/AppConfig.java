@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 14:40:44
+ * @LastEditTime: 2021-05-13 13:05:28
  * 
  * @Description: 应用配置
  */
@@ -14,7 +14,7 @@ package com.buaa.lookclipboard;
 import java.io.File;
 
 import com.buaa.commons.foundation.Lazy;
-import com.buaa.commons.util.StorageUtil;
+import org.apache.commons.io.FileUtils;
 import net.harawata.appdirs.AppDirsFactory;
 
 /**
@@ -24,7 +24,8 @@ public final class AppConfig {
     private final static String APP_AUTHOR = "buaa";
     private final static String APP_NAME = "lookclipboard";
     private final static String APP_DISPLAY_NAME = "LookClipboard";
-    private final static String APP_DATA = "appdata";
+    private final static String APP_DATA = "data";
+    private final static String APP_LOG = "log";
 
     private final static Lazy<AppConfig> instance = new Lazy<>(() -> new AppConfig());
 
@@ -55,12 +56,16 @@ public final class AppConfig {
 
     public File getAppFolder() {
         String path = AppDirsFactory.getInstance().getUserDataDir(getName(), null, getAuthor());
-        return StorageUtil.getFolder(path, true, false);
+        return FileUtils.getFile(path);
     }
 
     public File getAppDataFolder() {
         File appFolder = getAppFolder();
-        String path = String.format("%s/%s", appFolder.getAbsolutePath(), APP_DATA);
-        return StorageUtil.getFolder(path, true, false);
+        return FileUtils.getFile(appFolder, APP_DATA);
+    }
+
+    public File getAppLogFolder() {
+        File appFolder = getAppFolder();
+        return FileUtils.getFile(appFolder, APP_LOG);
     }
 }

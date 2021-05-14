@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 19:09:34
+ * @LastEditTime: 2021-05-14 21:42:16
  * 
  * @Description: 数据访问中心
  */
@@ -20,7 +20,9 @@ import java.sql.Statement;
 
 import com.buaa.commons.foundation.IClosable;
 import com.buaa.commons.foundation.Lazy;
+import com.buaa.commons.util.StringUtil;
 import com.buaa.lookclipboard.AppConfig;
+import org.apache.commons.io.FileUtils;
 
 /**
  * 数据访问中心
@@ -28,9 +30,15 @@ import com.buaa.lookclipboard.AppConfig;
 public final class DataAccessCenter implements IClosable {
     private final static String JDBC_DRIVER = "org.sqlite.JDBC";
     private final static String JDBC_SCHEME = "jdbc:sqlite";
-    private final static String DATABASE_PATH =
-            String.format("%s/record.db", AppConfig.getInstance().getAppFolder().getAbsolutePath());
-    private final static String DATABASE_URL = String.format("%s://%s", JDBC_SCHEME, DATABASE_PATH);
+    
+    private final static String DATABASE_NAME = "record.db";
+    private final static String DATABASE_PATH = FileUtils.getFile(AppConfig.getInstance().getAppFolder(), DATABASE_NAME).getAbsolutePath();
+    private final static String DATABASE_URL = StringUtil.interpolate(
+            "${JDBC_SCHEME}://${DATABASE_PATH}", new Object[][] 
+            {
+                {"JDBC_SCHEME", JDBC_SCHEME}, 
+                {"DATABASE_PATH", DATABASE_PATH}
+            });
 
     private final static Lazy<DataAccessCenter> instance = new Lazy<>(() -> new DataAccessCenter());
 

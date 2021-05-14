@@ -5,15 +5,16 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 12:01:39
+ * @LastEditTime: 2021-05-14 21:49:21
  * 
  * @Description: 剪贴板文本扩展
  */
 package com.buaa.lookclipboard.service.core.impl;
 
+import java.util.Objects;
 import com.buaa.commons.foundation.Ref;
 import com.buaa.lookclipboard.model.IRecord;
-
+import org.apache.commons.lang3.StringUtils;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
@@ -26,15 +27,14 @@ public final class ClipboardTextExtension extends ClipboardExtension<String> {
      */
     @Override
     public boolean isEqualInternal(IRecord lastRecord, String content) {
-        return lastRecord.getContent().equals(content);
+        return Objects.equals(lastRecord.getContent(), content);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void onReceivedInternal(IRecord newRecord, String content, Ref<String> outContent)
-            throws Exception {
+    protected void onReceivedInternal(IRecord newRecord, String content, Ref<String> outContent) throws Exception {
         outContent.set(content);
     }
 
@@ -60,9 +60,8 @@ public final class ClipboardTextExtension extends ClipboardExtension<String> {
      * {@inheritDoc}
      */
     @Override
-    public void onEdited(IRecord record, Object editContent, Ref<String> outContent)
-            throws Exception {
-        outContent.set(editContent.toString());
+    public void onEdited(IRecord record, Object editContent, Ref<String> outContent) throws Exception {
+        outContent.set(Objects.toString(editContent, StringUtils.EMPTY));
     }
 
     /**
@@ -70,6 +69,6 @@ public final class ClipboardTextExtension extends ClipboardExtension<String> {
      */
     @Override
     public void onDeleted(IRecord record) throws Exception {
-
+        // 忽略...
     }
 }

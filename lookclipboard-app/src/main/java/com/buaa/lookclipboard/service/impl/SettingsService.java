@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 11:58:26
+ * @LastEditTime: 2021-05-14 21:42:39
  * 
  * @Description: 设置服务
  */
@@ -18,20 +18,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 import com.buaa.commons.foundation.Lazy;
-import com.buaa.commons.util.DoubleUtil;
 import com.buaa.lookclipboard.App;
 import com.buaa.lookclipboard.AppConfig;
 import com.buaa.lookclipboard.service.ISettingsService;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * 设置服务
  */
 public final class SettingsService implements ISettingsService {
-    private final static String SETTINGS_PATH = String.format("%s/settings.xml",
-            AppConfig.getInstance().getAppFolder().getAbsolutePath());
     private final static String APP_SETTINGS = "AppSettings";
     private final static String OPACITY = "opacity";
     private final static String ALWAYS_ON_TOP = "alwaysOnTop";
+    
+    private final static String SETTINGS_NAME = "settings.xml";
+    private final static String SETTINGS_PATH = FileUtils.getFile(AppConfig.getInstance().getAppFolder(), SETTINGS_NAME).getAbsolutePath();
 
     private final static Lazy<SettingsService> instance = new Lazy<>(() -> new SettingsService());
 
@@ -78,7 +80,7 @@ public final class SettingsService implements ISettingsService {
      */
     @Override
     public double getOpacity() {
-        return DoubleUtil.tryParse(props.getProperty(OPACITY), 1.0);
+        return NumberUtils.toDouble(props.getProperty(OPACITY), 1.0);
     }
 
     /**

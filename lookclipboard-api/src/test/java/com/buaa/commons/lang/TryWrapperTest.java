@@ -5,14 +5,15 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 17:02:31
+ * @LastEditTime: 2021-05-13 15:54:17
  * 
  * @Description: TryWrapperTest
  */
 package com.buaa.commons.lang;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.util.function.BiConsumer;
 import org.junit.Test;
 
@@ -22,15 +23,16 @@ import org.junit.Test;
 public class TryWrapperTest {
     @Test
     public void print() {
-        BiConsumer<IllegalAccessException, ITryContext> ae = (e, context) -> {
-            System.out.println("IllegalAccessException" + e.getMessage());
+        BiConsumer<IOException, ITryContext> ae = (e, context) -> {
+            System.out.println("IOException" + e.getMessage());
         };
-        List<ExceptionHandler<?, ?>> handlers =
-                Arrays.asList(new ExceptionHandler<>((e, context) -> {
+        ExceptionHandler<?, ?>[] handlers = new ExceptionHandler<?, ?>[] {
+                new ExceptionHandler<>(ae, FileNotFoundException.class, FileSystemException.class),
+                new ExceptionHandler<RuntimeException, ITryContext>((e, context) -> {
                     System.out.println(e.getMessage());
-                }, Exception.class), new ExceptionHandler<>(ae, IllegalAccessException.class));
+                }, RuntimeException.class)};
         TryWrapper<ITryContext> tryWrapper = new TryWrapper<>((context) -> {
-            throw new IllegalAccessException("233");
+            throw new Exception("233");
         }, handlers, (context) -> {
             System.out.println("test");
         });

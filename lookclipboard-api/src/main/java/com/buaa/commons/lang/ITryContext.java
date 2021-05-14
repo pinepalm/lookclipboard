@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 15:48:26
+ * @LastEditTime: 2021-05-12 18:38:24
  * 
  * @Description: try-catch-finally上下文接口
  */
@@ -14,6 +14,6 @@ package com.buaa.commons.lang;
 /**
  * try-catch-finally上下文接口
  */
-public interface ITryContext {
+public interface ITryContext extends IContext {
 
 }

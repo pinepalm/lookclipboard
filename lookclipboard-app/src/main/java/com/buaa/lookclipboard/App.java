@@ -5,12 +5,13 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 23:12:05
+ * @LastEditTime: 2021-05-14 21:46:28
  * 
  * @Description: 应用
  */
 package com.buaa.lookclipboard;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.buaa.lookclipboard.dao.DataAccessCenter;
@@ -68,7 +69,7 @@ public class App extends Application {
         webView.setContextMenuEnabled(false);
         webEngine = webView.getEngine();
         webEngine.getLoadWorker().stateProperty().addListener((ov, oldState, newState) -> {
-            if (newState.equals(State.SUCCEEDED)) {
+            if (Objects.equals(newState, State.SUCCEEDED)) {
                 try {
                     DataAccessCenter.getInstance().open();
                     RecordDao.getInstance().createIfNotExists();
@@ -87,8 +88,7 @@ public class App extends Application {
         StackPane layoutRoot = new StackPane(webView);
         Scene scene = new Scene(layoutRoot);
 
-        primaryStage.getIcons().add(
-                new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
+        primaryStage.getIcons().add(new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
         primaryStage.setTitle(AppConfig.getInstance().getDisplayName());
         primaryStage.setOpacity(SettingsService.getInstance().getOpacity());
         primaryStage.setAlwaysOnTop(SettingsService.getInstance().getAlwaysOnTop());
@@ -99,9 +99,9 @@ public class App extends Application {
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((event) -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.getIcons().add(primaryStage.getIcons().get(0));
             alert.initOwner(primaryStage);
-            ((Stage) alert.getDialogPane().getScene().getWindow()).getIcons()
-                    .add(primaryStage.getIcons().get(0));
             alert.setTitle("提示");
             alert.setHeaderText(null);
             alert.setContentText("确认要退出吗?");

@@ -5,12 +5,13 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 23:17:36
+ * @LastEditTime: 2021-05-14 10:17:48
  * 
  * @Description: 数据类型工具类
  */
 package com.buaa.lookclipboard.util;
 
+import com.buaa.commons.util.JsonUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javafx.scene.input.DataFormat;

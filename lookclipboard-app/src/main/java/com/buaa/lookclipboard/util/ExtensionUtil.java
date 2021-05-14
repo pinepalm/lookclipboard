@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 00:46:53
+ * @LastEditTime: 2021-05-14 21:49:47
  * 
  * @Description: 扩展工具类
  */
@@ -35,8 +35,7 @@ public final class ExtensionUtil {
      * @param service     扩展服务类对象
      * @return 扩展服务加载器
      */
-    public static <T> ServiceLoader<T> createServiceLoader(Iterable<String> folderPaths,
-            Class<T> service) {
+    public static <T> ServiceLoader<T> createServiceLoader(Iterable<String> folderPaths, Class<T> service) {
         if (folderPaths == null)
             return null;
 
@@ -46,8 +45,11 @@ public final class ExtensionUtil {
             if (folderPath != null) {
                 try {
                     File folder = new File(folderPath);
-                    Collection<File> files = FileUtils.listFiles(folder,
-                            FileFilterUtils.suffixFileFilter("jar"), DirectoryFileFilter.INSTANCE);
+                    Collection<File> files = FileUtils.listFiles(
+                            folder,
+                            FileFilterUtils.suffixFileFilter("jar"),
+                            DirectoryFileFilter.INSTANCE);
+
                     for (File file : files) {
                         urls.add(file.toURI().toURL());
                     }
@@ -57,8 +59,10 @@ public final class ExtensionUtil {
             }
         }
 
-        ClassLoader classLoader = URLClassLoader.newInstance(urls.toArray(new URL[] {}),
-                Thread.currentThread().getContextClassLoader());
+        ClassLoader classLoader = URLClassLoader.newInstance(
+            urls.toArray(new URL[] {}),
+            Thread.currentThread().getContextClassLoader());
+
         return ServiceLoader.load(service, classLoader);
     }
 

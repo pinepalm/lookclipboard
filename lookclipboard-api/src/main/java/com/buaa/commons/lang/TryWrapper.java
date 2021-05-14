@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 16:44:05
+ * @LastEditTime: 2021-05-14 21:29:11
  * 
  * @Description: try-catch-finally包装器
  */
@@ -22,20 +22,27 @@ import com.buaa.commons.foundation.function.ThrowingConsumer;
 @SuppressWarnings({"rawtypes", "unchecked"})
 public final class TryWrapper<T extends ITryContext> {
     private final ThrowingConsumer<T, Exception> tryStatement;
-    private final Iterable<ExceptionHandler<?, ?>> exceptionHandlers;
+    private final ExceptionHandler<?, ?>[] exceptionHandlers;
     private final Consumer<T> finallyStatement;
 
-    public TryWrapper(ThrowingConsumer<T, Exception> tryStatement) {
+    public TryWrapper(
+            ThrowingConsumer<T, Exception> tryStatement) {
+
         this(tryStatement, null);
     }
 
-    public TryWrapper(ThrowingConsumer<T, Exception> tryStatement,
-            Iterable<ExceptionHandler<?, ?>> exceptionHandlers) {
+    public TryWrapper(
+            ThrowingConsumer<T, Exception> tryStatement,
+            ExceptionHandler<?, ?>[] exceptionHandlers) {
+
         this(tryStatement, exceptionHandlers, null);
     }
 
-    public TryWrapper(ThrowingConsumer<T, Exception> tryStatement,
-            Iterable<ExceptionHandler<?, ?>> exceptionHandlers, Consumer<T> finallyStatement) {
+    public TryWrapper(
+            ThrowingConsumer<T, Exception> tryStatement,
+            ExceptionHandler<?, ?>[] exceptionHandlers, 
+            Consumer<T> finallyStatement) {
+                
         this.tryStatement = tryStatement;
         this.exceptionHandlers = exceptionHandlers;
         this.finallyStatement = finallyStatement;
