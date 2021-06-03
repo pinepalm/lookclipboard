@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:29:11
+ * @LastEditTime: 2021-06-01 09:44:00
  * 
  * @Description: try-catch-finally包装器
  */
@@ -13,6 +13,7 @@ package com.buaa.commons.lang;
 
 import java.util.function.Consumer;
 import com.buaa.commons.foundation.function.ThrowingConsumer;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * try-catch-finally包装器
@@ -66,14 +67,21 @@ public final class TryWrapper<T extends ITryContext> {
                 tryStatement.accept(context);
             }
         } catch (Exception e) {
+            boolean isHandled = false;
+
             if (exceptionHandlers != null) {
                 for (ExceptionHandler exceptionHandler : exceptionHandlers) {
                     if (exceptionHandler != null && exceptionHandler.canHandle(e)) {
                         exceptionHandler.handle(e, context);
+                        isHandled=true;
 
                         break;
                     }
                 }
+            }
+            
+            if(!isHandled) {
+                ExceptionUtils.rethrow(e);
             }
         } finally {
             if (finallyStatement != null) {

@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:49:47
+ * @LastEditTime: 2021-05-14 22:44:07
  * 
  * @Description: 扩展工具类
  */
@@ -60,8 +60,8 @@ public final class ExtensionUtil {
         }
 
         ClassLoader classLoader = URLClassLoader.newInstance(
-            urls.toArray(new URL[] {}),
-            Thread.currentThread().getContextClassLoader());
+                urls.toArray(new URL[] {}),
+                Thread.currentThread().getContextClassLoader());
 
         return ServiceLoader.load(service, classLoader);
     }

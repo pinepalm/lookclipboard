@@ -5,37 +5,83 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-13 15:54:17
+ * @LastEditTime: 2021-06-03 14:46:58
  * 
  * @Description: TryWrapperTest
  */
 package com.buaa.commons.lang;
 
+import static org.junit.Assert.assertEquals;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
-import java.util.function.BiConsumer;
 import org.junit.Test;
 
 /**
  * TryWrapper测试
  */
 public class TryWrapperTest {
+    /**
+     * 测试Try
+     */
     @Test
-    public void print() {
-        BiConsumer<IOException, ITryContext> ae = (e, context) -> {
-            System.out.println("IOException" + e.getMessage());
-        };
-        ExceptionHandler<?, ?>[] handlers = new ExceptionHandler<?, ?>[] {
-                new ExceptionHandler<>(ae, FileNotFoundException.class, FileSystemException.class),
-                new ExceptionHandler<RuntimeException, ITryContext>((e, context) -> {
-                    System.out.println(e.getMessage());
-                }, RuntimeException.class)};
-        TryWrapper<ITryContext> tryWrapper = new TryWrapper<>((context) -> {
-            throw new Exception("233");
-        }, handlers, (context) -> {
-            System.out.println("test");
+    public void testTry() {
+        TryWrapper<TestTryContext> tryWrapper = new TryWrapper<>((context) -> {
+            context.message = "Try";
         });
-        tryWrapper.invoke();
+
+        TestTryContext context = new TestTryContext();
+        tryWrapper.invoke(context);
+        assertEquals(context.message, "Try");
+    }
+
+    /**
+     * 测试Catch
+     */
+    @Test
+    public void testCatch() {
+        ExceptionHandler<?, ?>[] handlers = new ExceptionHandler<?, ?>[] {
+            new ExceptionHandler<IOException, TestTryContext>((e, context)-> {
+                context.message = "IOException";
+            }, FileNotFoundException.class, FileSystemException.class),
+            new ExceptionHandler<RuntimeException, TestTryContext>((e, context) -> {
+                context.message = "RuntimeException";
+            }, RuntimeException.class)
+        };
+        TryWrapper<TestTryContext> tryWrapper = new TryWrapper<>((context) -> {
+            throw new RuntimeException();
+        }, handlers);
+
+        TestTryContext context = new TestTryContext();
+        tryWrapper.invoke(context);
+        assertEquals(context.message, "RuntimeException");
+    }
+
+    /**
+     * 测试Finally
+     */
+    @Test
+    public void testFinally() {
+        ExceptionHandler<?, ?>[] handlers = new ExceptionHandler<?, ?>[] {
+            new ExceptionHandler<IOException, TestTryContext>((e, context)-> {
+                context.message = "IOException";
+            }, FileNotFoundException.class, FileSystemException.class),
+            new ExceptionHandler<RuntimeException, TestTryContext>((e, context) -> {
+                context.message = "RuntimeException";
+            }, RuntimeException.class)
+        };
+        TryWrapper<TestTryContext> tryWrapper = new TryWrapper<>((context) -> {
+            throw new RuntimeException();
+        }, handlers, (context) -> {
+            context.message = "Finally";
+        });
+
+        TestTryContext context = new TestTryContext();
+        tryWrapper.invoke(context);
+        assertEquals(context.message, "Finally");
+    }
+
+    public class TestTryContext implements ITryContext {
+        public String message;
     }
 }
