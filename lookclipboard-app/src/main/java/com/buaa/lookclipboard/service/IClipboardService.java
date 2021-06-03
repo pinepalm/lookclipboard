@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 22:32:35
+ * @LastEditTime: 2021-06-03 20:59:27
  * 
  * @Description: 剪贴板服务接口
  */
@@ -67,7 +67,7 @@ public interface IClipboardService extends IAppService {
     /**
      * 通过记录查询条件获取记录列表
      * 
-     * @param condition 记录查询条件JSON字符串
+     * @param conditionJSON 记录查询条件JSON字符串
      * @return 记录列表
      */
     String getRecordsByCondition(String conditionJSON);

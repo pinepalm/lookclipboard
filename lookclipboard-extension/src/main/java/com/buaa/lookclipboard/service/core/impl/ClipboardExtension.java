@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:46:58
+ * @LastEditTime: 2021-06-03 21:14:15
  * 
  * @Description: 剪贴板扩展
  */
@@ -38,7 +38,7 @@ public abstract class ClipboardExtension<T> implements IClipboardExtension {
      * @param newRecord  关联的记录
      * @param content    原始内容
      * @param outContent 处理后内容
-     * @throws Exception
+     * @throws Exception 可能抛出的异常
      */
     protected abstract void onReceivedInternal(IRecord newRecord, T content, Ref<String> outContent) throws Exception;
 

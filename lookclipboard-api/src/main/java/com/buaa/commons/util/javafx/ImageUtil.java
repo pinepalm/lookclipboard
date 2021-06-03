@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:54:53
+ * @LastEditTime: 2021-06-03 20:40:57
  * 
  * @Description: 图像工具类
  */
@@ -69,9 +69,10 @@ public final class ImageUtil {
     /**
      * 将图像转为字节数组
      * 
-     * @param img 图像
+     * @param img        图像
+     * @param formatName 格式名称
      * @return 字节数组
-     * @throws IOException
+     * @throws IOException 当数据写入时可能有IO异常
      */
     public static byte[] toBytes(Image img, String formatName) throws IOException {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(img, null);
@@ -116,7 +117,7 @@ public final class ImageUtil {
      * 
      * @param file 文件
      * @return 图像
-     * @throws MalformedURLException
+     * @throws MalformedURLException 当文件转为URL时可能有URL异常
      */
     public static Image read(File file) throws MalformedURLException {
         return new Image(file.toURI().toURL().toExternalForm());
@@ -128,7 +129,7 @@ public final class ImageUtil {
      * @param img        图像
      * @param file       文件
      * @param formatName 格式名称
-     * @throws IOException
+     * @throws IOException 当数据写入时可能有IO异常
      */
     public static void write(Image img, File file, String formatName) throws IOException {
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(img, null);
@@ -140,7 +141,7 @@ public final class ImageUtil {
      * 
      * @param base64 Base64字符串
      * @return 图像
-     * @throws IOException
+     * @throws IOException 当数据读取时可能有IO异常
      */
     public static Image fromBase64(String base64) throws IOException {
         String noHeaderBase64 = base64.replaceFirst("data[:]image[/]([a-z])+;base64,", "").trim();
@@ -157,7 +158,7 @@ public final class ImageUtil {
      * @param img        图像
      * @param formatName 格式名称
      * @return Base64字符串
-     * @throws IOException
+     * @throws IOException 当数据写入时可能有IO异常
      */
     public static String toBase64(Image img, String formatName) throws IOException {
         byte[] buffer = toBytes(img, formatName);

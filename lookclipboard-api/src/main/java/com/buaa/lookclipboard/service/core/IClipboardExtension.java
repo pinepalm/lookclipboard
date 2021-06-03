@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 17:16:49
+ * @LastEditTime: 2021-06-03 20:48:04
  * 
  * @Description: 剪贴板扩展接口
  */
@@ -43,7 +43,7 @@ public interface IClipboardExtension {
      * @param newRecord  关联的记录
      * @param content    原始内容
      * @param outContent 处理后内容
-     * @throws Exception
+     * @throws Exception 可能抛出的异常
      */
     void onReceived(IRecord newRecord, Object content, Ref<String> outContent) throws Exception;
 
@@ -53,7 +53,7 @@ public interface IClipboardExtension {
      * @param record      关联的记录
      * @param editContent 编辑信息
      * @param outContent  处理后内容
-     * @throws Exception
+     * @throws Exception 可能抛出的异常
      */
     void onEdited(IRecord record, Object editContent, Ref<String> outContent) throws Exception;
 
@@ -62,7 +62,7 @@ public interface IClipboardExtension {
      * 
      * @param record     关联的记录
      * @param outContent 生成的数据包
-     * @throws Exception
+     * @throws Exception 可能抛出的异常
      */
     void onCopied(IRecord record, Ref<ClipboardContent> outContent) throws Exception;
 
@@ -70,7 +70,7 @@ public interface IClipboardExtension {
      * 在删除时调用
      * 
      * @param record 关联的记录
-     * @throws Exception
+     * @throws Exception 可能抛出的异常
      */
     void onDeleted(IRecord record) throws Exception;
 }

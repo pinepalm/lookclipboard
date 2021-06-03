@@ -5,16 +5,17 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-08 00:19:26
+ * @LastEditTime: 2021-06-03 20:30:26
  * 
  * @Description: 可抛出异常的 Function
  */
 package com.buaa.commons.foundation.function;
 
+import java.util.function.Function;
 import java.util.Objects;
 
 /**
- * 可抛出异常的 Function
+ * 可抛出异常的 {@link Function}
  * 
  * @param <T> 参数类型
  * @param <R> 结果类型
@@ -29,16 +30,16 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
      * 
      * @param t 参数
      * @return 结果
-     * @throws E
+     * @throws E 可能抛出的异常
      */
     R apply(T t) throws E;
 
     /**
-     * 生成复合的 ThrowingFunction
+     * 生成复合的 {@link ThrowingFunction}
      * 
      * @param <V>    传递参数类型
-     * @param before 在此 ThrowingFunction 执行之前执行的 ThrowingFunction
-     * @return 复合的 ThrowingFunction
+     * @param before 在此 {@link ThrowingFunction} 执行之前执行的 {@link ThrowingFunction}
+     * @return 复合的 {@link ThrowingFunction}
      * @throws NullPointerException 若{@code before}为null
      * 
      * @see #andThen(ThrowingFunction)
@@ -50,11 +51,11 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
     }
 
     /**
-     * 生成复合的 ThrowingFunction
+     * 生成复合的 {@link ThrowingFunction}
      * 
      * @param <V>   传递参数类型
-     * @param after 在此 ThrowingFunction 执行之后执行的 ThrowingFunction
-     * @return 复合的 ThrowingFunction
+     * @param after 在此 {@link ThrowingFunction} 执行之后执行的 {@link ThrowingFunction}
+     * @return 复合的 {@link ThrowingFunction}
      * @throws NullPointerException 若{@code after}为null
      * 
      * @see #compose(ThrowingFunction)
@@ -66,11 +67,11 @@ public interface ThrowingFunction<T, R, E extends Throwable> {
     }
 
     /**
-     * 生成返回自身参数的 ThrowingFunction
+     * 生成返回自身参数的 {@link ThrowingFunction}
      * 
      * @param <T> 参数类型
      * @param <E> 异常类型
-     * @return 返回自身参数的 ThrowingFunction
+     * @return 返回自身参数的 {@link ThrowingFunction}
      */
     static <T, E extends Throwable> ThrowingFunction<T, T, E> identity() {
         return t -> t;

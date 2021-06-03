@@ -1,0 +1,26 @@
+-classpath
+'C:/Users/17862/.m2/repository/net/harawata/appdirs/1.2.1/appdirs-1.2.1.jar;C:/Users/17862/.m2/repository/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.jar;C:/Users/17862/.m2/repository/net/java/dev/jna/jna/5.6.0/jna-5.6.0.jar;C:/Users/17862/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.12.3/jackson-databind-2.12.3.jar;C:/Users/17862/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.12.3/jackson-core-2.12.3.jar;C:/Users/17862/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.12.3/jackson-annotations-2.12.3.jar;C:/Users/17862/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.12.3/jackson-datatype-jsr310-2.12.3.jar;C:/Users/17862/.m2/repository/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar;C:/Users/17862/.m2/repository/commons-codec/commons-codec/1.15/commons-codec-1.15.jar;C:/Users/17862/.m2/repository/org/apache/commons/commons-text/1.9/commons-text-1.9.jar;C:/Users/17862/.m2/repository/commons-io/commons-io/2.8.0/commons-io-2.8.0.jar;C:/Users/17862/.m2/repository/org/apache/commons/commons-collections4/4.4/commons-collections4-4.4.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'1.8'
+-sourcepath
+'D:/GitHub/pinepalm/lookclipboard/lookclipboard-api/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2021. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'D:/GitHub/pinepalm/lookclipboard/docs/java/lookclipboard-api'
+-docencoding
+'UTF-8'
+-doctitle
+'lookclipboard-api 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' 'D:/GitHub/pinepalm/lookclipboard/lookclipboard-api/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'lookclipboard-api 1.0-SNAPSHOT API'

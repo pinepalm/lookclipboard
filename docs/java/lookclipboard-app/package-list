@@ -1,0 +1,8 @@
+com.buaa.appmodel.core.datatransfer
+com.buaa.lookclipboard
+com.buaa.lookclipboard.dao
+com.buaa.lookclipboard.dao.impl
+com.buaa.lookclipboard.model
+com.buaa.lookclipboard.service
+com.buaa.lookclipboard.service.impl
+com.buaa.lookclipboard.util

@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:46:28
+ * @LastEditTime: 2021-06-03 19:06:19
  * 
  * @Description: 应用
  */
@@ -57,10 +57,19 @@ public class App extends Application {
         return webEngine.executeScript(code);
     }
 
+    /**
+     * App的Main函数
+     * 
+     * @param args 参数
+     * @throws Exception 可能抛出的异常
+     */
     public static void main(String[] args) throws Exception {
         launch(args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;

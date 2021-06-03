@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-13 13:37:10
+ * @LastEditTime: 2021-06-03 20:38:35
  * 
  * @Description: 异常处理器
  */
@@ -69,7 +69,8 @@ public final class ExceptionHandler<E extends Exception, T extends ITryContext> 
     /**
      * 处理异常
      * 
-     * @param e 异常
+     * @param e       异常
+     * @param context 上下文
      */
     public void handle(E e, T context) {
         BiConsumer<E, T> handler = getHandler();

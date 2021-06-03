@@ -23,6 +23,8 @@ import com.buaa.lookclipboard.model.RecordQueryCondition;
 public interface IRecordDao extends IDataAccessObject {
     /**
      * 若记录表不存在, 则创建记录表
+     * 
+     * @throws SQLException 可能抛出的SQL异常
      */
     void createIfNotExists() throws SQLException;
 
@@ -30,6 +32,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 添加记录
      * 
      * @param record 记录
+     * @throws SQLException 可能抛出的SQL异常
      */
     void add(Record record) throws SQLException;
 
@@ -37,6 +40,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 更新记录
      * 
      * @param record 记录
+     * @throws SQLException 可能抛出的SQL异常
      */
     void update(Record record) throws SQLException;
 
@@ -44,6 +48,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 删除记录
      * 
      * @param id 记录ID
+     * @throws SQLException 可能抛出的SQL异常
      */
     void delete(String id) throws SQLException;
 
@@ -51,11 +56,13 @@ public interface IRecordDao extends IDataAccessObject {
      * 删除批量记录
      * 
      * @param ids 记录ID列表
+     * @throws SQLException 可能抛出的SQL异常
      */
     void deleteBatch(String... ids) throws SQLException;
 
     /**
      * 删除全部记录
+     * @throws SQLException 可能抛出的SQL异常
      */
     void deleteAll() throws SQLException;
 
@@ -64,6 +71,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 
      * @param id 记录ID
      * @return 记录
+     * @throws SQLException 可能抛出的SQL异常
      */
     Record getById(String id) throws SQLException;
 
@@ -72,6 +80,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 
      * @param ids 记录ID列表
      * @return 记录列表
+     * @throws SQLException 可能抛出的SQL异常
      */
     List<Record> getByIdList(String... ids) throws SQLException;
 
@@ -80,6 +89,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 
      * @param condition 记录查询条件
      * @return 记录列表
+     * @throws SQLException 可能抛出的SQL异常
      */
     List<Record> getByCondition(RecordQueryCondition condition) throws SQLException;
 
@@ -88,6 +98,7 @@ public interface IRecordDao extends IDataAccessObject {
      * 
      * @param condition 记录查询条件
      * @return 记录数
+     * @throws SQLException 可能抛出的SQL异常
      */
     int getCountByCondition(RecordQueryCondition condition) throws SQLException;
 }

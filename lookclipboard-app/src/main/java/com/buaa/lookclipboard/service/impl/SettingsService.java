@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:42:39
+ * @LastEditTime: 2021-06-03 19:18:51
  * 
  * @Description: 设置服务
  */
@@ -33,7 +33,7 @@ public final class SettingsService implements ISettingsService {
     private final static String ALWAYS_ON_TOP = "alwaysOnTop";
     
     private final static String SETTINGS_NAME = "settings.xml";
-    private final static String SETTINGS_PATH = FileUtils.getFile(AppConfig.getInstance().getAppFolder(), SETTINGS_NAME).getAbsolutePath();
+    private final static String SETTINGS_PATH = FileUtils.getFile(AppConfig.getInstance().getAppSettingsFolder(), SETTINGS_NAME).getAbsolutePath();
 
     private final static Lazy<SettingsService> instance = new Lazy<>(() -> new SettingsService());
 
@@ -65,7 +65,12 @@ public final class SettingsService implements ISettingsService {
         }
     }
 
-    private void saveProps() {
+    private String getProperty(String key) {
+        return props.getProperty(key);
+    }
+
+    private void setProperty(String key, String value) {
+        props.setProperty(key, value);
         try {
             FileOutputStream settingsOutput = new FileOutputStream(SETTINGS_FILE);
             props.storeToXML(settingsOutput, APP_SETTINGS);
@@ -80,7 +85,7 @@ public final class SettingsService implements ISettingsService {
      */
     @Override
     public double getOpacity() {
-        return NumberUtils.toDouble(props.getProperty(OPACITY), 1.0);
+        return NumberUtils.toDouble(getProperty(OPACITY), 1.0);
     }
 
     /**
@@ -95,8 +100,7 @@ public final class SettingsService implements ISettingsService {
         }
 
         App.getStage().setOpacity(opacity);
-        props.setProperty(OPACITY, Double.toString(opacity));
-        saveProps();
+        setProperty(OPACITY, Double.toString(opacity));
     }
 
     /**
@@ -104,7 +108,7 @@ public final class SettingsService implements ISettingsService {
      */
     @Override
     public boolean getAlwaysOnTop() {
-        return Boolean.parseBoolean(props.getProperty(ALWAYS_ON_TOP));
+        return Boolean.parseBoolean(getProperty(ALWAYS_ON_TOP));
     }
 
     /**
@@ -117,7 +121,6 @@ public final class SettingsService implements ISettingsService {
         }
 
         App.getStage().setAlwaysOnTop(alwaysOnTop);
-        props.setProperty(ALWAYS_ON_TOP, Boolean.toString(alwaysOnTop));
-        saveProps();
+        setProperty(ALWAYS_ON_TOP, Boolean.toString(alwaysOnTop));
     }
 }

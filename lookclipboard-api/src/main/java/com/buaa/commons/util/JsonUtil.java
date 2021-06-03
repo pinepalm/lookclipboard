@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:31:04
+ * @LastEditTime: 2021-06-03 20:48:12
  * 
  * @Description: JSON工具类
  */
@@ -59,7 +59,7 @@ public final class JsonUtil {
      * @param value          对象值
      * @param throwException 是否抛出异常
      * @return JSON字符串
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException 若{@code throwException}为{@code true}, 则可能会抛出Json处理异常
      */
     public static String stringify(Object value, boolean throwException) {
         try {
@@ -118,9 +118,9 @@ public final class JsonUtil {
      * @param valueType      对象类
      * @param throwException 是否抛出异常
      * @return 对象
-     * @throws JsonParseException
-     * @throws JsonMappingException
-     * @throws JsonProcessingException
+     * @throws JsonParseException      若{@code throwException}为{@code true}, 则可能会抛出Json解析异常
+     * @throws JsonMappingException    若{@code throwException}为{@code true}, 则可能会抛出Json映射异常
+     * @throws JsonProcessingException 若{@code throwException}为{@code true}, 则可能会抛出Json处理异常
      */
     public static <T> T parse(String content, Class<T> valueType, boolean throwException) {
         return parseInternal(content, throwException,
@@ -135,9 +135,9 @@ public final class JsonUtil {
      * @param valueTypeRef   对象类引用
      * @param throwException 是否抛出异常
      * @return 对象
-     * @throws JsonParseException
-     * @throws JsonMappingException
-     * @throws JsonProcessingException
+     * @throws JsonParseException      若{@code throwException}为{@code true}, 则可能会抛出Json解析异常
+     * @throws JsonMappingException    若{@code throwException}为{@code true}, 则可能会抛出Json映射异常
+     * @throws JsonProcessingException 若{@code throwException}为{@code true}, 则可能会抛出Json处理异常
      */
     public static <T> T parse(String content, TypeReference<T> valueTypeRef, boolean throwException) {
         return parseInternal(content, throwException,
@@ -152,9 +152,9 @@ public final class JsonUtil {
      * @param valueType      对象类
      * @param throwException 是否抛出异常
      * @return 对象
-     * @throws JsonParseException
-     * @throws JsonMappingException
-     * @throws JsonProcessingException
+     * @throws JsonParseException      若{@code throwException}为{@code true}, 则可能会抛出Json解析异常
+     * @throws JsonMappingException    若{@code throwException}为{@code true}, 则可能会抛出Json映射异常
+     * @throws JsonProcessingException 若{@code throwException}为{@code true}, 则可能会抛出Json处理异常
      */
     public static <T> T parse(String content, JavaType valueType, boolean throwException) {
         return parseInternal(content, throwException,

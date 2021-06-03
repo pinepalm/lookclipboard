@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:42:16
+ * @LastEditTime: 2021-06-03 20:59:03
  * 
  * @Description: 数据访问中心
  */
@@ -32,7 +32,7 @@ public final class DataAccessCenter implements IClosable {
     private final static String JDBC_SCHEME = "jdbc:sqlite";
     
     private final static String DATABASE_NAME = "record.db";
-    private final static String DATABASE_PATH = FileUtils.getFile(AppConfig.getInstance().getAppFolder(), DATABASE_NAME).getAbsolutePath();
+    private final static String DATABASE_PATH = FileUtils.getFile(AppConfig.getInstance().getAppDataFolder(), DATABASE_NAME).getAbsolutePath();
     private final static String DATABASE_URL = StringUtil.interpolate(
             "${JDBC_SCHEME}://${DATABASE_PATH}", new Object[][] 
             {
@@ -64,8 +64,8 @@ public final class DataAccessCenter implements IClosable {
     /**
      * 打开数据访问中心
      * 
-     * @throws SQLException
-     * @throws SQLTimeoutException
+     * @throws SQLException        可能抛出的SQL异常
+     * @throws SQLTimeoutException 可能抛出的SQL执行超时异常
      */
     public void open() throws SQLException, SQLTimeoutException {
         if (connection != null) {
@@ -79,7 +79,7 @@ public final class DataAccessCenter implements IClosable {
      * 创建语句对象
      * 
      * @return 语句对象
-     * @throws SQLException
+     * @throws SQLException 可能抛出的SQL异常
      */
     public Statement createStatement() throws SQLException {
         if (connection == null) {
@@ -94,7 +94,7 @@ public final class DataAccessCenter implements IClosable {
      * 
      * @param sql Sql语句
      * @return 预编译语句对象
-     * @throws SQLException
+     * @throws SQLException 可能抛出的SQL异常
      */
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         if (connection == null) {
@@ -107,7 +107,7 @@ public final class DataAccessCenter implements IClosable {
     /**
      * 关闭数据访问中心
      * 
-     * @throws SQLException
+     * @throws SQLException 可能抛出的SQL异常
      */
     public void close() throws SQLException {
         if (connection == null) {
