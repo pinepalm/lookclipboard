@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 15:25:59
+ * @LastEditTime: 2021-06-04 18:06:55
  * 
  * @Description: 剪贴板服务
  */
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
-
+import java.util.concurrent.CompletableFuture;
 import com.buaa.appmodel.core.datatransfer.Clipboard;
 import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.foundation.Ref;
@@ -103,7 +103,7 @@ public final class ClipboardService implements IClipboardService {
             extensions.put(extension.getDataFormat(), extension);
         }
 
-        Clipboard.contentChanged.addEventHandler((sender, args) -> receive());
+        Clipboard.contentChanged.addEventHandler((sender, args) -> CompletableFuture.runAsync(() -> receive()));
     }
 
     private void receive() {
