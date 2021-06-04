@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 19:18:51
+ * @LastEditTime: 2021-06-04 15:31:26
  * 
  * @Description: 设置服务
  */
@@ -48,7 +48,7 @@ public final class SettingsService implements ISettingsService {
 
     private final File SETTINGS_FILE = new File(SETTINGS_PATH);
 
-    private Properties props;
+    private final Properties props = new Properties();
 
     private SettingsService() {
         try {
@@ -57,11 +57,10 @@ public final class SettingsService implements ISettingsService {
             }
 
             FileInputStream settingsInput = new FileInputStream(SETTINGS_FILE);
-            props = new Properties();
             props.loadFromXML(settingsInput);
             settingsInput.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogService.getInstance().warn("settings load failed", e);
         }
     }
 
@@ -76,7 +75,7 @@ public final class SettingsService implements ISettingsService {
             props.storeToXML(settingsOutput, APP_SETTINGS);
             settingsOutput.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LogService.getInstance().warn("settings save failed", e);
         }
     }
 
@@ -85,7 +84,8 @@ public final class SettingsService implements ISettingsService {
      */
     @Override
     public double getOpacity() {
-        return NumberUtils.toDouble(getProperty(OPACITY), 1.0);
+        double opacity = NumberUtils.toDouble(getProperty(OPACITY), 1d);
+        return Math.max(0d, Math.min(opacity, 1d));
     }
 
     /**

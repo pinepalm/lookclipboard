@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 19:14:27
+ * @LastEditTime: 2021-06-04 13:13:42
  * 
  * @Description: 应用配置
  */
@@ -25,7 +25,7 @@ public final class AppConfig {
     private final static String APP_NAME = "lookclipboard";
     private final static String APP_DISPLAY_NAME = "LookClipboard";
     private final static String APP_DATA = "data";
-    private final static String APP_LOG = "log";
+    private final static String APP_LOGS = "logs";
     private final static String APP_SETTINGS = "settings";
 
     private final static Lazy<AppConfig> instance = new Lazy<>(() -> new AppConfig());
@@ -95,9 +95,9 @@ public final class AppConfig {
      * 
      * @return 应用日志文件夹
      */
-    public File getAppLogFolder() {
+    public File getAppLogsFolder() {
         File appFolder = getAppFolder();
-        return FileUtils.getFile(appFolder, APP_LOG);
+        return FileUtils.getFile(appFolder, APP_LOGS);
     }
 
     /**

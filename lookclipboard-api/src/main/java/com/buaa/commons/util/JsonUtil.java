@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 20:48:12
+ * @LastEditTime: 2021-06-04 15:06:48
  * 
  * @Description: JSON工具类
  */
@@ -38,7 +38,6 @@ public final class JsonUtil {
             if (throwException) {
                 ExceptionUtils.rethrow(e);
             }
-            e.printStackTrace();
             return null;
         }
     }
@@ -69,7 +68,6 @@ public final class JsonUtil {
             if (throwException) {
                 ExceptionUtils.rethrow(e);
             }
-            e.printStackTrace();
             return null;
         }
     }

@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 22:44:07
+ * @LastEditTime: 2021-06-04 15:17:01
  * 
  * @Description: 扩展工具类
  */
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ServiceLoader;
-
+import com.buaa.lookclipboard.service.impl.LogService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -54,7 +54,7 @@ public final class ExtensionUtil {
                         urls.add(file.toURI().toURL());
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogService.getInstance().error("extensions load failed", e);
                 }
             }
         }

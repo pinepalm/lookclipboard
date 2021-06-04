@@ -5,13 +5,14 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 10:17:48
+ * @LastEditTime: 2021-06-04 15:32:56
  * 
  * @Description: 数据类型工具类
  */
 package com.buaa.lookclipboard.util;
 
 import com.buaa.commons.util.JsonUtil;
+import com.buaa.lookclipboard.service.impl.LogService;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javafx.scene.input.DataFormat;
@@ -52,7 +53,7 @@ public final class DataFormatUtil {
             try {
                 dataFormat = new DataFormat(identifiers);
             } catch (Exception e) {
-                e.printStackTrace();
+                LogService.getInstance().debug("json convert to dataformat failed", e);
             }
         }
 

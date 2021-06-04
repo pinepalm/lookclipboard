@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 19:06:19
+ * @LastEditTime: 2021-06-04 15:53:10
  * 
  * @Description: 应用
  */
@@ -17,6 +17,7 @@ import java.util.Optional;
 import com.buaa.lookclipboard.dao.DataAccessCenter;
 import com.buaa.lookclipboard.dao.impl.RecordDao;
 import com.buaa.lookclipboard.service.impl.ClipboardService;
+import com.buaa.lookclipboard.service.impl.LogService;
 import com.buaa.lookclipboard.service.impl.SettingsService;
 import javafx.application.Application;
 import javafx.concurrent.Worker.State;
@@ -83,13 +84,14 @@ public class App extends Application {
                     DataAccessCenter.getInstance().open();
                     RecordDao.getInstance().createIfNotExists();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogService.getInstance().fatal("database access failed", e);
                     System.exit(1);
                 }
 
                 JSObject window = (JSObject) webEngine.executeScript("window");
                 window.setMember("clipboardService", ClipboardService.getInstance());
                 window.setMember("settingsService", SettingsService.getInstance());
+                window.setMember("logService", LogService.getInstance());
             }
         });
         webEngine.load(getClass().getResource("/assets/index.html").toExternalForm());
@@ -119,12 +121,14 @@ public class App extends Application {
                 try {
                     DataAccessCenter.getInstance().close();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogService.getInstance().error("database close failed", e);
                 }
+                LogService.getInstance().info("app close success");
             } else {
                 event.consume();
             }
         });
         primaryStage.show();
+        LogService.getInstance().info("app open success");
     }
 }

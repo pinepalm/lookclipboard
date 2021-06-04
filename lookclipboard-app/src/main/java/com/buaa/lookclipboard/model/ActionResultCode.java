@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-12 17:03:15
+ * @LastEditTime: 2021-06-04 15:20:56
  * 
  * @Description: 操作结果代码
  */
@@ -15,16 +15,16 @@ package com.buaa.lookclipboard.model;
  * 操作结果代码
  */
 public enum ActionResultCode {
-    SUCCESS(200, "成功"),
+    SUCCESS(200, "Success"),
 
-    JSON_PARSE_ERROR(400001, "JSON解析错误"), 
-    PARAMS_ERROR(400002, "请求参数错误"),
+    JSON_PARSE_ERROR(400001, "Json Parse Error"), 
+    PARAMS_ERROR(400002, "Params Error"),
 
-    RECORD_NOT_EXISTS(404001, "记录不存在"), 
-    RECORD_EXTENSION_NOT_EXISTS(404002, "缺失该记录对应的数据格式扩展"),
+    RECORD_NOT_EXISTS(404001, "Record Not Exists"), 
+    RECORD_EXTENSION_NOT_EXISTS(404002, "Record Extension Not Exists"),
 
-    INTERNAL_ERROR(500001, "内部错误"), 
-    INTERNAL_SQL_ERROR(500002, "内部SQL错误");
+    INTERNAL_ERROR(500001, "Internal Error"), 
+    INTERNAL_SQL_ERROR(500002, "Internal Sql Error");
 
     private final Integer code;
     private final String message;

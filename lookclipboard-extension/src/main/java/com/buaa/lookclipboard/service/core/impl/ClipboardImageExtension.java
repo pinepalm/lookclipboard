@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:49:05
+ * @LastEditTime: 2021-06-04 15:17:34
  * 
  * @Description: 剪贴板图像扩展
  */
@@ -54,7 +54,6 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
             Image lastImage = ImageUtil.read(imageFile);
             return ImageUtil.deepEquals(lastImage, content);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }

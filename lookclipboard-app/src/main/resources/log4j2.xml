@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="warn">
+    <Properties>
+        <Property name="pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+        <Property name="charset">UTF-8</Property>
+    </Properties>
+    
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${pattern}" charset="${charset}" />
+        </Console>
+        <RollingFile name="appInfo" fileName="${sys:app.log}/app-info.log"
+                     filePattern="${sys:app.log}/$${date:yyyy-MM}/app-info-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="${pattern}" charset="${charset}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="appWarn" fileName="${sys:app.log}/app-warn.log"
+                     filePattern="${sys:app.log}/$${date:yyyy-MM}/app-warn-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="${pattern}" charset="${charset}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="appError" fileName="${sys:app.log}/app-error.log"
+                     filePattern="${sys:app.log}/$${date:yyyy-MM}/app-error-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="fatal" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="${pattern}" charset="${charset}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+        </RollingFile>
+        <RollingFile name="appFatal" fileName="${sys:app.log}/app-fatal.log"
+                     filePattern="${sys:app.log}/$${date:yyyy-MM}/app-fatal-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="fatal" onMatch="DENY" onMismatch="NEUTRAL" />
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+            </Filters>
+            <PatternLayout pattern="${pattern}" charset="${charset}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+        </RollingFile>
+    </Appenders>
+    
+    <Loggers>
+        <Root level="info">
+            <!-- 仅在测试时使用控制台 -->
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="appInfo"/>
+            <AppenderRef ref="appWarn"/>
+            <AppenderRef ref="appError"/>
+            <AppenderRef ref="appFatal"/>
+        </Root>
+    </Loggers>
+</Configuration>

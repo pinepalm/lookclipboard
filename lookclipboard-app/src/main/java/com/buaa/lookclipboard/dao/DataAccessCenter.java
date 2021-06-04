@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 20:59:03
+ * @LastEditTime: 2021-06-04 15:28:10
  * 
  * @Description: 数据访问中心
  */
@@ -22,6 +22,7 @@ import com.buaa.commons.foundation.IClosable;
 import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.util.StringUtil;
 import com.buaa.lookclipboard.AppConfig;
+import com.buaa.lookclipboard.service.impl.LogService;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -57,7 +58,8 @@ public final class DataAccessCenter implements IClosable {
         try {
             Class.forName(JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            LogService.getInstance().fatal("database driver init failed", e);
+            System.exit(1);
         }
     }
 
@@ -73,6 +75,8 @@ public final class DataAccessCenter implements IClosable {
         }
 
         connection = DriverManager.getConnection(DATABASE_URL);
+
+        LogService.getInstance().info("database open success");
     }
 
     /**
@@ -116,5 +120,7 @@ public final class DataAccessCenter implements IClosable {
 
         connection.close();
         connection = null;
+
+        LogService.getInstance().info("database close success");
     }
 }

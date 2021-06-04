@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:51:07
+ * @LastEditTime: 2021-06-04 15:25:59
  * 
  * @Description: 剪贴板服务
  */
@@ -65,23 +65,26 @@ public final class ClipboardService implements IClipboardService {
 
     private final ExceptionHandler<?, ?>[] exceptionHandlers = new ExceptionHandler<?, ?>[] {
             new ExceptionHandler<JsonProcessingException, ActionResultTryContext>((e, context) -> {
-                e.printStackTrace();
+                ActionResultCode code = ActionResultCode.JSON_PARSE_ERROR;
+                LogService.getInstance().error(code.getMessage(), e);
                 if (context != null) {
-                    context.setResult(ActionResultCode.JSON_PARSE_ERROR.asResult(null));
+                    context.setResult(code.asResult(null));
                 }
             }, JsonProcessingException.class),
 
             new ExceptionHandler<SQLException, ActionResultTryContext>((e, context) -> {
-                e.printStackTrace();
+                ActionResultCode code = ActionResultCode.INTERNAL_SQL_ERROR;
+                LogService.getInstance().error(code.getMessage(), e);
                 if (context != null) {
-                    context.setResult(ActionResultCode.INTERNAL_SQL_ERROR.asResult(null));
+                    context.setResult(code.asResult(null));
                 }
             }, SQLException.class),
 
             new ExceptionHandler<Exception, ActionResultTryContext>((e, context) -> {
-                e.printStackTrace();
+                ActionResultCode code = ActionResultCode.INTERNAL_ERROR;
+                LogService.getInstance().error(code.getMessage(), e);
                 if (context != null) {
-                    context.setResult(ActionResultCode.INTERNAL_ERROR.asResult(null));
+                    context.setResult(code.asResult(null));
                 }
             }, Exception.class)};
 
