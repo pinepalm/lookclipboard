@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 13:13:42
+ * @LastEditTime: 2021-06-10 02:21:15
  * 
  * @Description: 应用配置
  */
@@ -77,7 +77,11 @@ public final class AppConfig {
      */
     public File getAppFolder() {
         String path = AppDirsFactory.getInstance().getUserDataDir(getName(), null, getAuthor());
-        return FileUtils.getFile(path);
+        File folder = FileUtils.getFile(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
     }
 
     /**
@@ -87,7 +91,11 @@ public final class AppConfig {
      */
     public File getAppDataFolder() {
         File appFolder = getAppFolder();
-        return FileUtils.getFile(appFolder, APP_DATA);
+        File folder = FileUtils.getFile(appFolder, APP_DATA);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
     }
 
     /**
@@ -97,7 +105,11 @@ public final class AppConfig {
      */
     public File getAppLogsFolder() {
         File appFolder = getAppFolder();
-        return FileUtils.getFile(appFolder, APP_LOGS);
+        File folder = FileUtils.getFile(appFolder, APP_LOGS);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
     }
 
     /**
@@ -107,6 +119,10 @@ public final class AppConfig {
      */
     public File getAppSettingsFolder() {
         File appFolder = getAppFolder();
-        return FileUtils.getFile(appFolder, APP_SETTINGS);
+        File folder = FileUtils.getFile(appFolder, APP_SETTINGS);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
     }
 }

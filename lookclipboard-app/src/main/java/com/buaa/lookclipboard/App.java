@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 15:53:10
+ * @LastEditTime: 2021-06-09 21:15:41
  * 
  * @Description: 应用
  */
@@ -19,6 +19,7 @@ import com.buaa.lookclipboard.dao.impl.RecordDao;
 import com.buaa.lookclipboard.service.impl.ClipboardService;
 import com.buaa.lookclipboard.service.impl.LogService;
 import com.buaa.lookclipboard.service.impl.SettingsService;
+import org.apache.commons.io.FileUtils;
 import javafx.application.Application;
 import javafx.concurrent.Worker.State;
 import javafx.scene.Scene;
@@ -94,12 +95,21 @@ public class App extends Application {
                 window.setMember("logService", LogService.getInstance());
             }
         });
-        webEngine.load(getClass().getResource("/assets/index.html").toExternalForm());
+        try {
+            webEngine.load(FileUtils.getFile(".", "assets", "index.html").toURI().toURL().toExternalForm());
+        } catch (Exception e) {
+            LogService.getInstance().fatal("app ui load failed", e);
+            System.exit(1);
+        }
 
         StackPane layoutRoot = new StackPane(webView);
         Scene scene = new Scene(layoutRoot);
 
-        primaryStage.getIcons().add(new Image(getClass().getResource("/assets/ClipboardIcon.png").toExternalForm()));
+        try {
+            primaryStage.getIcons().add(new Image(FileUtils.getFile(".", "assets", "icon.png").toURI().toURL().toExternalForm()));
+        } catch (Exception e) {
+            LogService.getInstance().error("app icon load failed", e);
+        }
         primaryStage.setTitle(AppConfig.getInstance().getDisplayName());
         primaryStage.setOpacity(SettingsService.getInstance().getOpacity());
         primaryStage.setAlwaysOnTop(SettingsService.getInstance().getAlwaysOnTop());
@@ -111,7 +121,10 @@ public class App extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
-            alertStage.getIcons().add(primaryStage.getIcons().get(0));
+            if (!primaryStage.getIcons().isEmpty())
+            {
+                alertStage.getIcons().add(primaryStage.getIcons().get(0));
+            }
             alert.initOwner(primaryStage);
             alert.setTitle("提示");
             alert.setHeaderText(null);

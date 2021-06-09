@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 15:17:01
+ * @LastEditTime: 2021-06-10 00:28:18
  * 
  * @Description: 扩展工具类
  */
@@ -16,8 +16,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.ServiceLoader;
+import java.util.function.Supplier;
+import com.buaa.commons.foundation.ServiceLoaderEx;
 import com.buaa.lookclipboard.service.impl.LogService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -33,9 +35,10 @@ public final class ExtensionUtil {
      * @param <T>         扩展服务类型
      * @param folderPaths 扩展文件夹路径
      * @param service     扩展服务类对象
+     * @param configs     配置文件
      * @return 扩展服务加载器
      */
-    public static <T> ServiceLoader<T> createServiceLoader(Iterable<String> folderPaths, Class<T> service) {
+    public static <T> ServiceLoaderEx<T> createServiceLoader(Iterable<String> folderPaths, Class<T> service, Supplier<Enumeration<URL>> configs) {
         if (folderPaths == null)
             return null;
 
@@ -63,7 +66,7 @@ public final class ExtensionUtil {
                 urls.toArray(new URL[] {}),
                 Thread.currentThread().getContextClassLoader());
 
-        return ServiceLoader.load(service, classLoader);
+        return ServiceLoaderEx.load(service, classLoader, configs);
     }
 
     private ExtensionUtil() {

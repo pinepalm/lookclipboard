@@ -5,12 +5,14 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 18:06:55
+ * @LastEditTime: 2021-06-10 02:04:34
  * 
  * @Description: 剪贴板服务
  */
 package com.buaa.lookclipboard.service.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,11 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import com.buaa.appmodel.core.datatransfer.Clipboard;
 import com.buaa.commons.foundation.Lazy;
 import com.buaa.commons.foundation.Ref;
+import com.buaa.commons.foundation.ServiceLoaderEx;
 import com.buaa.commons.foundation.function.ThrowingBiFunction;
 import com.buaa.commons.lang.ExceptionHandler;
 import com.buaa.commons.lang.TryWrapper;
@@ -36,6 +39,7 @@ import com.buaa.lookclipboard.model.Record;
 import com.buaa.lookclipboard.model.RecordQueryCondition;
 import com.buaa.lookclipboard.model.ActionResultCode;
 import com.buaa.lookclipboard.model.ActionResultTryContext;
+import javafx.application.Platform;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
@@ -44,6 +48,7 @@ import com.buaa.lookclipboard.service.core.IClipboardExtension;
 import com.buaa.lookclipboard.util.ExtensionUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 /**
@@ -96,14 +101,25 @@ public final class ClipboardService implements IClipboardService {
     private Record lastRecord;
 
     private ClipboardService() {
-        ServiceLoader<IClipboardExtension> serviceLoader = ExtensionUtil.createServiceLoader(
-                Arrays.asList(getClass().getResource("/extensions").getPath()),
-                IClipboardExtension.class);
-        for (IClipboardExtension extension : serviceLoader) {
-            extensions.put(extension.getDataFormat(), extension);
+        try {
+            String extensionsPath = FileUtils.getFile(".", "extensions").toURI().toURL().getPath();
+            ServiceLoaderEx<IClipboardExtension> serviceLoader = ExtensionUtil.createServiceLoader(Arrays.asList(extensionsPath), IClipboardExtension.class, () -> {
+                Vector<URL> urls = new Vector<>();
+                try {
+                    urls.add(FileUtils.getFile(".", "conf", "services", IClipboardExtension.class.getName()).toURI().toURL());
+                } catch (MalformedURLException e) {
+                    ExceptionUtils.rethrow(e);
+                }
+                return urls.elements();
+            });
+            for (IClipboardExtension extension : serviceLoader) {
+                extensions.put(extension.getDataFormat(), extension);
+            }
+        } catch (Exception e) {
+            LogService.getInstance().error("extensions load failed", e);
         }
 
-        Clipboard.contentChanged.addEventHandler((sender, args) -> CompletableFuture.runAsync(() -> receive()));
+        Clipboard.contentChanged.addEventHandler((sender, args) -> receive());
     }
 
     private void receive() {
@@ -117,35 +133,37 @@ public final class ClipboardService implements IClipboardService {
             Object content = Clipboard.getContent(dataFormat);
 
             if (content != null) {
-                synchronized (syncRoot) {
-                    if (lastRecord == null
-                            || !Objects.equals(dataFormat, lastRecord.getDataFormat())
-                            || !extension.isEqual(lastRecord.asReadOnly(), content)) {
-                        TryWrapper<ActionResultTryContext> addRecord =
-                                new TryWrapper<>((context) -> {
-                                    Record record = Record.createNow(dataFormat);
-                                    Ref<String> outContent = new Ref<>();
-                                    extension.onReceived(record.asReadOnly(), content, outContent);
-
-                                    record.setContent(outContent.get());
-                                    lastRecord = record;
-                                    RecordDao.getInstance().add(record);
-
-                                    String recordJson = JsonUtil.stringify(record);
-                                    if (recordJson != null) {
-                                        String addRecordJS = StringUtil.interpolate(
-                                                "${ADD_RECORD}(\"${recordJson}\")", new Object[][] 
-                                                {
-                                                    {"ADD_RECORD", ADD_RECORD}, 
-                                                    {"recordJson", StringEscapeUtils.escapeJson(recordJson)}
-                                                });
-                                        App.runJavaScript(addRecordJS);
-                                    }
-                                }, exceptionHandlers);
-
-                        addRecord.invoke();
+                CompletableFuture.runAsync(() -> {
+                    synchronized (syncRoot) {
+                        if (lastRecord == null
+                                || !Objects.equals(dataFormat, lastRecord.getDataFormat())
+                                || !extension.isEqual(lastRecord.asReadOnly(), content)) {
+                            TryWrapper<ActionResultTryContext> addRecord =
+                                    new TryWrapper<>((context) -> {
+                                        Record record = Record.createNow(dataFormat);
+                                        Ref<String> outContent = new Ref<>();
+                                        extension.onReceived(record.asReadOnly(), content, outContent);
+    
+                                        record.setContent(outContent.get());
+                                        lastRecord = record;
+                                        RecordDao.getInstance().add(record);
+    
+                                        String recordJson = JsonUtil.stringify(record);
+                                        if (recordJson != null) {
+                                            String addRecordJS = StringUtil.interpolate(
+                                                    "${ADD_RECORD}(\"${recordJson}\")", new Object[][] 
+                                                    {
+                                                        {"ADD_RECORD", ADD_RECORD}, 
+                                                        {"recordJson", StringEscapeUtils.escapeJson(recordJson)}
+                                                    });
+                                            Platform.runLater(() -> App.runJavaScript(addRecordJS));
+                                        }
+                                    }, exceptionHandlers);
+    
+                            addRecord.invoke();
+                        }
                     }
-                }
+                });
 
                 break;
             }

@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 15:17:34
+ * @LastEditTime: 2021-06-10 02:21:56
  * 
  * @Description: 剪贴板图像扩展
  */
@@ -33,6 +33,9 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
     private File getAppImageDataFolder() {
         File appDataFolder = AppConfig.getInstance().getAppDataFolder();
         File imageDataFolder = FileUtils.getFile(appDataFolder, IMAGE_DATA);
+        if (!imageDataFolder.exists()) {
+            imageDataFolder.mkdirs();
+        }
         return imageDataFolder;
     }
 
