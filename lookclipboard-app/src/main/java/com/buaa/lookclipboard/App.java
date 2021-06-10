@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-09 21:15:41
+ * @LastEditTime: 2021-06-10 12:05:03
  * 
  * @Description: 应用
  */
@@ -17,6 +17,7 @@ import java.util.Optional;
 import com.buaa.lookclipboard.dao.DataAccessCenter;
 import com.buaa.lookclipboard.dao.impl.RecordDao;
 import com.buaa.lookclipboard.service.impl.ClipboardService;
+import com.buaa.lookclipboard.service.impl.ConfigService;
 import com.buaa.lookclipboard.service.impl.LogService;
 import com.buaa.lookclipboard.service.impl.SettingsService;
 import org.apache.commons.io.FileUtils;
@@ -90,6 +91,7 @@ public class App extends Application {
                 }
 
                 JSObject window = (JSObject) webEngine.executeScript("window");
+                window.setMember("configService", ConfigService.getInstance());
                 window.setMember("clipboardService", ClipboardService.getInstance());
                 window.setMember("settingsService", SettingsService.getInstance());
                 window.setMember("logService", LogService.getInstance());
