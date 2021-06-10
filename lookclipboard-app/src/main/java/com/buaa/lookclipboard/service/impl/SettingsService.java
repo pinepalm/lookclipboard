@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-04 15:31:26
+ * @LastEditTime: 2021-06-10 19:08:37
  * 
  * @Description: 设置服务
  */
@@ -52,13 +52,11 @@ public final class SettingsService implements ISettingsService {
 
     private SettingsService() {
         try {
-            if (!SETTINGS_FILE.exists()) {
-                SETTINGS_FILE.createNewFile();
+            if (SETTINGS_FILE.exists()) {
+                FileInputStream settingsInput = new FileInputStream(SETTINGS_FILE);
+                props.loadFromXML(settingsInput);
+                settingsInput.close();
             }
-
-            FileInputStream settingsInput = new FileInputStream(SETTINGS_FILE);
-            props.loadFromXML(settingsInput);
-            settingsInput.close();
         } catch (Exception e) {
             LogService.getInstance().warn("settings load failed", e);
         }
@@ -71,6 +69,10 @@ public final class SettingsService implements ISettingsService {
     private void setProperty(String key, String value) {
         props.setProperty(key, value);
         try {
+            if (!SETTINGS_FILE.exists()) {
+                SETTINGS_FILE.createNewFile();
+            }
+
             FileOutputStream settingsOutput = new FileOutputStream(SETTINGS_FILE);
             props.storeToXML(settingsOutput, APP_SETTINGS);
             settingsOutput.close();

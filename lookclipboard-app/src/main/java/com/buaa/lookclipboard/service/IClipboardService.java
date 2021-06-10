@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 20:59:27
+ * @LastEditTime: 2021-06-10 19:34:59
  * 
  * @Description: 剪贴板服务接口
  */
@@ -15,6 +15,20 @@ package com.buaa.lookclipboard.service;
  * 剪贴板服务接口
  */
 public interface IClipboardService extends IAppService {
+    /**
+     * 获取是否监控剪贴板
+     * 
+     * @return 是否监控
+     */
+    boolean isMonitored();
+
+    /**
+     * 设置是否监控剪贴板
+     * 
+     * @param monitored 是否监控
+     */
+    void setMonitored(boolean monitored);
+
     /**
      * 复制记录内容
      * 

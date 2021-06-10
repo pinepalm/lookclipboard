@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-10 02:04:34
+ * @LastEditTime: 2021-06-10 19:38:42
  * 
  * @Description: 剪贴板服务
  */
@@ -97,8 +97,9 @@ public final class ClipboardService implements IClipboardService {
     private final Map<DataFormat, IClipboardExtension> extensions = new LinkedHashMap<>();
     private final Object syncRoot = new Object();
 
-    private boolean isCopying;
-    private Record lastRecord;
+    private boolean monitored = true;
+    private boolean isCopying = false;
+    private Record lastRecord = null;
 
     private ClipboardService() {
         try {
@@ -128,44 +129,46 @@ public final class ClipboardService implements IClipboardService {
             return;
         }
 
-        for (IClipboardExtension extension : extensions.values()) {
-            DataFormat dataFormat = extension.getDataFormat();
-            Object content = Clipboard.getContent(dataFormat);
-
-            if (content != null) {
-                CompletableFuture.runAsync(() -> {
-                    synchronized (syncRoot) {
-                        if (lastRecord == null
-                                || !Objects.equals(dataFormat, lastRecord.getDataFormat())
-                                || !extension.isEqual(lastRecord.asReadOnly(), content)) {
-                            TryWrapper<ActionResultTryContext> addRecord =
-                                    new TryWrapper<>((context) -> {
-                                        Record record = Record.createNow(dataFormat);
-                                        Ref<String> outContent = new Ref<>();
-                                        extension.onReceived(record.asReadOnly(), content, outContent);
+        if (isMonitored()) {
+            for (IClipboardExtension extension : extensions.values()) {
+                DataFormat dataFormat = extension.getDataFormat();
+                Object content = Clipboard.getContent(dataFormat);
     
-                                        record.setContent(outContent.get());
-                                        lastRecord = record;
-                                        RecordDao.getInstance().add(record);
-    
-                                        String recordJson = JsonUtil.stringify(record);
-                                        if (recordJson != null) {
-                                            String addRecordJS = StringUtil.interpolate(
-                                                    "${ADD_RECORD}(\"${recordJson}\")", new Object[][] 
-                                                    {
-                                                        {"ADD_RECORD", ADD_RECORD}, 
-                                                        {"recordJson", StringEscapeUtils.escapeJson(recordJson)}
-                                                    });
-                                            Platform.runLater(() -> App.runJavaScript(addRecordJS));
-                                        }
-                                    }, exceptionHandlers);
-    
-                            addRecord.invoke();
+                if (content != null) {
+                    CompletableFuture.runAsync(() -> {
+                        synchronized (syncRoot) {
+                            if (lastRecord == null
+                                    || !Objects.equals(dataFormat, lastRecord.getDataFormat())
+                                    || !extension.isEqual(lastRecord.asReadOnly(), content)) {
+                                TryWrapper<ActionResultTryContext> addRecord =
+                                        new TryWrapper<>((context) -> {
+                                            Record record = Record.createNow(dataFormat);
+                                            Ref<String> outContent = new Ref<>();
+                                            extension.onReceived(record.asReadOnly(), content, outContent);
+        
+                                            record.setContent(outContent.get());
+                                            lastRecord = record;
+                                            RecordDao.getInstance().add(record);
+        
+                                            String recordJson = JsonUtil.stringify(record);
+                                            if (recordJson != null) {
+                                                String addRecordJS = StringUtil.interpolate(
+                                                        "${ADD_RECORD}(\"${recordJson}\")", new Object[][] 
+                                                        {
+                                                            {"ADD_RECORD", ADD_RECORD}, 
+                                                            {"recordJson", StringEscapeUtils.escapeJson(recordJson)}
+                                                        });
+                                                Platform.runLater(() -> App.runJavaScript(addRecordJS));
+                                            }
+                                        }, exceptionHandlers);
+        
+                                addRecord.invoke();
+                            }
                         }
-                    }
-                });
-
-                break;
+                    });
+    
+                    break;
+                }
             }
         }
     }
@@ -200,6 +203,22 @@ public final class ClipboardService implements IClipboardService {
 
         handle.invoke(resultContext);
         return resultContext.getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMonitored() {
+        return monitored;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setMonitored(boolean monitored) {
+        this.monitored = monitored;
     }
 
     /**
