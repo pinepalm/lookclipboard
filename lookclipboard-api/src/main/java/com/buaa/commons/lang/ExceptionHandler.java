@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 20:38:35
+ * @LastEditTime: 2021-06-11 14:47:58
  * 
  * @Description: 异常处理器
  */
@@ -23,6 +23,12 @@ public final class ExceptionHandler<E extends Exception, T extends ITryContext> 
     private final BiConsumer<E, T> handler;
     private final Class<? extends E>[] exceptionTypes;
 
+    /**
+     * 指定处理器和异常类型列表进行构造
+     * 
+     * @param handler        处理器
+     * @param exceptionTypes 异常类型列表
+     */
     @SafeVarargs
     public ExceptionHandler(BiConsumer<E, T> handler, Class<? extends E>... exceptionTypes) {
         this.handler = handler;

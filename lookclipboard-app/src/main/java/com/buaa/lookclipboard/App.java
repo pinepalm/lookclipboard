@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-10 12:05:03
+ * @LastEditTime: 2021-06-11 15:13:51
  * 
  * @Description: 应用
  */
@@ -115,10 +115,6 @@ public class App extends Application {
         primaryStage.setTitle(AppConfig.getInstance().getDisplayName());
         primaryStage.setOpacity(SettingsService.getInstance().getOpacity());
         primaryStage.setAlwaysOnTop(SettingsService.getInstance().getAlwaysOnTop());
-        primaryStage.setMinWidth(468d);
-        primaryStage.setWidth(468d);
-        primaryStage.setMinHeight(880d);
-        primaryStage.setHeight(880d);
         primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest((event) -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);

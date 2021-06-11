@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 00:15:25
+ * @LastEditTime: 2021-06-11 14:50:05
  * 
  * @Description: 记录
  */
@@ -60,10 +60,6 @@ public class Record implements IRecord {
 
     private final List<IRecordTag> tags = new ArrayList<>();;
     private final Lazy<IRecord> readonlyRecord = new Lazy<>(() -> new ReadOnlyRecord());
-
-    public Record() {
-
-    }
 
     /**
      * {@inheritDoc}

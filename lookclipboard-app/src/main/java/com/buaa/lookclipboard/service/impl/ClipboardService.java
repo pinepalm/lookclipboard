@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-10 19:38:42
+ * @LastEditTime: 2021-06-11 15:04:20
  * 
  * @Description: 剪贴板服务
  */
@@ -140,16 +140,16 @@ public final class ClipboardService implements IClipboardService {
                             if (lastRecord == null
                                     || !Objects.equals(dataFormat, lastRecord.getDataFormat())
                                     || !extension.isEqual(lastRecord.asReadOnly(), content)) {
-                                TryWrapper<ActionResultTryContext> addRecord =
-                                        new TryWrapper<>((context) -> {
+                                TryWrapper.<ActionResultTryContext>builder()
+                                        .tryStatement((context) -> {
                                             Record record = Record.createNow(dataFormat);
                                             Ref<String> outContent = new Ref<>();
                                             extension.onReceived(record.asReadOnly(), content, outContent);
-        
+
                                             record.setContent(outContent.get());
                                             lastRecord = record;
                                             RecordDao.getInstance().add(record);
-        
+
                                             String recordJson = JsonUtil.stringify(record);
                                             if (recordJson != null) {
                                                 String addRecordJS = StringUtil.interpolate(
@@ -160,9 +160,10 @@ public final class ClipboardService implements IClipboardService {
                                                         });
                                                 Platform.runLater(() -> App.runJavaScript(addRecordJS));
                                             }
-                                        }, exceptionHandlers);
-        
-                                addRecord.invoke();
+                                        })
+                                        .catchStatement(exceptionHandlers)
+                                        .build()
+                                        .invoke();
                             }
                         }
                     });
@@ -177,15 +178,18 @@ public final class ClipboardService implements IClipboardService {
             ThrowingBiFunction<Record, IClipboardExtension, IActionResult, Exception> function) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> handle = new TryWrapper<>((context) -> {
-            Record record = RecordDao.getInstance().getById(id);
-            context.setResult(
-                    record != null 
-                    ? handle(record, function) 
-                    : ActionResultCode.RECORD_NOT_EXISTS.asResult(null));
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    Record record = RecordDao.getInstance().getById(id);
+                    context.setResult(
+                            record != null 
+                            ? handle(record, function) 
+                            : ActionResultCode.RECORD_NOT_EXISTS.asResult(null));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        handle.invoke(resultContext);
         return resultContext.getResult();
     }
 
@@ -193,15 +197,18 @@ public final class ClipboardService implements IClipboardService {
             ThrowingBiFunction<Record, IClipboardExtension, IActionResult, Exception> function) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> handle = new TryWrapper<>((context) -> {
-            IClipboardExtension extension = extensions.get(record.getDataFormat());
-            context.setResult(
-                    extension != null 
-                    ? function.apply(record, extension) 
-                    : ActionResultCode.RECORD_EXTENSION_NOT_EXISTS.asResult(null));
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    IClipboardExtension extension = extensions.get(record.getDataFormat());
+                    context.setResult(
+                            extension != null 
+                            ? function.apply(record, extension) 
+                            : ActionResultCode.RECORD_EXTENSION_NOT_EXISTS.asResult(null));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        handle.invoke(resultContext);
         return resultContext.getResult();
     }
 
@@ -265,22 +272,25 @@ public final class ClipboardService implements IClipboardService {
     public String deleteBatch(String idsJSON) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> deleteBatch = new TryWrapper<>((context) -> {
-            String[] ids = JsonUtil.parse(idsJSON, String[].class);
-            List<Record> recordList = RecordDao.getInstance().getByIdList(ids);
-            List<IActionResult> results = new ArrayList<>();
-            for (Record record : recordList) {
-                results.add(handle(record, (rec, extension) -> {
-                    extension.onDeleted(rec.asReadOnly());
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    String[] ids = JsonUtil.parse(idsJSON, String[].class);
+                    List<Record> recordList = RecordDao.getInstance().getByIdList(ids);
+                    List<IActionResult> results = new ArrayList<>();
+                    for (Record record : recordList) {
+                        results.add(handle(record, (rec, extension) -> {
+                            extension.onDeleted(rec.asReadOnly());
 
-                    return ActionResultCode.SUCCESS.asResult(null);
-                }));
-            }
-            RecordDao.getInstance().deleteBatch(ids);
-            context.setResult(ActionResultCode.SUCCESS.asResult(results));
-        }, exceptionHandlers);
+                            return ActionResultCode.SUCCESS.asResult(null);
+                        }));
+                    }
+                    RecordDao.getInstance().deleteBatch(ids);
+                    context.setResult(ActionResultCode.SUCCESS.asResult(results));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        deleteBatch.invoke(resultContext);
         return JsonUtil.stringify(resultContext.getResult());
     }
 
@@ -291,13 +301,16 @@ public final class ClipboardService implements IClipboardService {
     public String deleteAll() {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> deleteAll = new TryWrapper<>((context) -> {
-            FileUtils.cleanDirectory(AppConfig.getInstance().getAppDataFolder());
-            RecordDao.getInstance().deleteAll();
-            context.setResult(ActionResultCode.SUCCESS.asResult(null));
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    FileUtils.cleanDirectory(AppConfig.getInstance().getAppDataFolder());
+                    RecordDao.getInstance().deleteAll();
+                    context.setResult(ActionResultCode.SUCCESS.asResult(null));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        deleteAll.invoke(resultContext);
         return JsonUtil.stringify(resultContext.getResult());
     }
 
@@ -325,18 +338,21 @@ public final class ClipboardService implements IClipboardService {
     public String setIsPinned(String id, boolean isPinned) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> setIsPinned = new TryWrapper<>((context) -> {
-            Record record = RecordDao.getInstance().getById(id);
-            if (record != null) {
-                record.setIsPinned(isPinned);
-                RecordDao.getInstance().update(record);
-                context.setResult(ActionResultCode.SUCCESS.asResult(null));
-            } else {
-                context.setResult(ActionResultCode.RECORD_NOT_EXISTS.asResult(null));
-            }
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    Record record = RecordDao.getInstance().getById(id);
+                    if (record != null) {
+                        record.setIsPinned(isPinned);
+                        RecordDao.getInstance().update(record);
+                        context.setResult(ActionResultCode.SUCCESS.asResult(null));
+                    } else {
+                        context.setResult(ActionResultCode.RECORD_NOT_EXISTS.asResult(null));
+                    }
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        setIsPinned.invoke(resultContext);
         return JsonUtil.stringify(resultContext.getResult());
     }
 
@@ -347,13 +363,16 @@ public final class ClipboardService implements IClipboardService {
     public String getRecordsByCondition(String conditionJSON) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> getRecordsByCondition = new TryWrapper<>((context) -> {
-            RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class, true);
-            List<Record> recordList = RecordDao.getInstance().getByCondition(condition);
-            context.setResult(ActionResultCode.SUCCESS.asResult(recordList));
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class, true);
+                    List<Record> recordList = RecordDao.getInstance().getByCondition(condition);
+                    context.setResult(ActionResultCode.SUCCESS.asResult(recordList));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        getRecordsByCondition.invoke(resultContext);
         return JsonUtil.stringify(resultContext.getResult());
     }
 
@@ -364,13 +383,16 @@ public final class ClipboardService implements IClipboardService {
     public String getRecordsCountByCondition(String conditionJSON) {
         ActionResultTryContext resultContext = new ActionResultTryContext();
 
-        TryWrapper<ActionResultTryContext> getRecordsCountByCondition = new TryWrapper<>((context) -> {
-            RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class, true);
-            Integer recordsCount = RecordDao.getInstance().getCountByCondition(condition);
-            context.setResult(ActionResultCode.SUCCESS.asResult(recordsCount));
-        }, exceptionHandlers);
+        TryWrapper.<ActionResultTryContext>builder()
+                .tryStatement((context) -> {
+                    RecordQueryCondition condition = JsonUtil.parse(conditionJSON, RecordQueryCondition.class, true);
+                    Integer recordsCount = RecordDao.getInstance().getCountByCondition(condition);
+                    context.setResult(ActionResultCode.SUCCESS.asResult(recordsCount));
+                })
+                .catchStatement(exceptionHandlers)
+                .build()
+                .invoke(resultContext);
 
-        getRecordsCountByCondition.invoke(resultContext);
         return JsonUtil.stringify(resultContext.getResult());
     }
 }

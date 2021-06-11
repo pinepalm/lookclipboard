@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-11 16:41:34
+ * @LastEditTime: 2021-06-11 14:46:12
  * 
  * @Description: 懒加载类
  */
@@ -24,6 +24,11 @@ public class Lazy<T> {
 
     private final Object syncRoot = new Object();
 
+    /**
+     * 指定值加载器进行构造
+     * 
+     * @param valueFactory 值加载器
+     */
     public Lazy(ThrowingSupplier<T, Exception> valueFactory) {
         this.valueFactory = valueFactory;
     }

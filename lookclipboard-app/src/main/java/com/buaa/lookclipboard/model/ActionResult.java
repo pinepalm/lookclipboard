@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 15:42:56
+ * @LastEditTime: 2021-06-11 14:49:38
  * 
  * @Description: 操作结果
  */
@@ -19,6 +19,12 @@ public class ActionResult<T> implements IActionResult {
     private final String message;
     private final T data;
 
+    /**
+     * 指定结果代码和数据进行构造
+     * 
+     * @param code 结果代码
+     * @param data 数据
+     */
     public ActionResult(ActionResultCode code, T data) {
         this.code = code.getCode();
         this.message = code.getMessage();
