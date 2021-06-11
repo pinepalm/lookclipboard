@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-06 23:37:30
+ * @LastEditTime: 2021-06-11 17:24:13
  * 
  * @Description: 记录查询条件
  */
@@ -22,9 +22,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class RecordQueryCondition {
     private String[][] dataFormats;
     private String queryContent;
-    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_T_HH_mm_ss_SSS_Z)
     private LocalDateTime startTime;
-    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_T_HH_mm_ss_SSS_Z)
     private LocalDateTime endTime;
     private Boolean isPinned;
     private Integer pageSize;

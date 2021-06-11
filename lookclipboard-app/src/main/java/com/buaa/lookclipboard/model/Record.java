@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-11 14:50:05
+ * @LastEditTime: 2021-06-11 17:24:33
  * 
  * @Description: 记录
  */
@@ -51,9 +51,9 @@ public class Record implements IRecord {
 
     private String id;
     private DataFormat dataFormat;
-    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_T_HH_mm_ss_SSS_Z)
     private LocalDateTime createdTime;
-    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_HH_mm_ss_SSS)
+    @JsonFormat(pattern = LocalDateTimeUtil.yyyy_MM_dd_T_HH_mm_ss_SSS_Z)
     private LocalDateTime modifiedTime;
     private String content;
     private boolean isPinned;

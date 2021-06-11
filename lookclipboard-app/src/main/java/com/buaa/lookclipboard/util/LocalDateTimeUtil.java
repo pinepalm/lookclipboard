@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-07 16:09:41
+ * @LastEditTime: 2021-06-11 17:21:00
  * 
  * @Description: 本地日期时间工具类
  */
@@ -23,6 +23,11 @@ public final class LocalDateTimeUtil {
      * "yyyy-MM-dd HH:mm:ss.SSS"格式化字符串
      */
     public final static String yyyy_MM_dd_HH_mm_ss_SSS = "yyyy-MM-dd HH:mm:ss.SSS";
+
+    /**
+     * "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"格式化字符串
+     */
+    public final static String yyyy_MM_dd_T_HH_mm_ss_SSS_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     /**
      * 格式化日期时间
