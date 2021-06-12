@@ -124,6 +124,13 @@
             <charset>UTF-8</charset>
             <encoding>UTF-8</encoding>
             <docencoding>UTF-8</docencoding>
+            <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+            <docletArtifact>
+              <groupId>org.umlgraph</groupId>
+              <artifactId>doclet</artifactId>
+              <version>5.1</version>
+            </docletArtifact>
+            <additionalparam>-horizontal -attributes -enumconstants -enumerations -operations -types -visibility -inferrel -inferdep -hide java.* -inferrel -collpackages java.util.*</additionalparam>
           </configuration>
         </plugin>
       </plugins>

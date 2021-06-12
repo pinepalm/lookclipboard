@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-11 15:04:20
+ * @LastEditTime: 2021-06-12 18:39:29
  * 
  * @Description: 剪贴板服务
  */
@@ -158,7 +158,13 @@ public final class ClipboardService implements IClipboardService {
                                                             {"ADD_RECORD", ADD_RECORD}, 
                                                             {"recordJson", StringEscapeUtils.escapeJson(recordJson)}
                                                         });
-                                                Platform.runLater(() -> App.runJavaScript(addRecordJS));
+                                                Platform.runLater(() -> {
+                                                    try {
+                                                        App.runJavaScript(addRecordJS);
+                                                    } catch (Exception e) {
+                                                        LogService.getInstance().warn("run js function addRecord failed", e);
+                                                    }
+                                                });
                                             }
                                         })
                                         .catchStatement(exceptionHandlers)
