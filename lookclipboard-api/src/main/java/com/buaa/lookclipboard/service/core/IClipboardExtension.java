@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 20:48:04
+ * @LastEditTime: 2021-06-12 22:40:34
  * 
  * @Description: 剪贴板扩展接口
  */
@@ -29,13 +29,13 @@ public interface IClipboardExtension {
     DataFormat getDataFormat();
 
     /**
-     * 判断是否内容与上一条记录相同
+     * 是否需要接收
      * 
      * @param lastRecord 上一条记录
      * @param content    原始内容
-     * @return 是否内容与上一条记录相同
+     * @return 是否需要接收
      */
-    boolean isEqual(IRecord lastRecord, Object content);
+    boolean needReceive(IRecord lastRecord, Object content);
 
     /**
      * 在接收时调用

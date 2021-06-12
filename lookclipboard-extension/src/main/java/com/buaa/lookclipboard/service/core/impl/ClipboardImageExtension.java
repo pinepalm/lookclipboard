@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-10 02:21:56
+ * @LastEditTime: 2021-06-12 22:46:51
  * 
  * @Description: 剪贴板图像扩展
  */
@@ -47,17 +47,17 @@ public final class ClipboardImageExtension extends ClipboardExtension<Image> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isEqualInternal(IRecord lastRecord, Image content) {
+    public boolean needReceiveInternal(IRecord lastRecord, Image content) {
         if (lastRecord.getContent() == null && content == null) {
-            return true;
+            return false;
         }
 
         try {
             File imageFile = getAppImageDataFile(lastRecord.getContent());
             Image lastImage = ImageUtil.read(imageFile);
-            return ImageUtil.deepEquals(lastImage, content);
+            return !ImageUtil.deepEquals(lastImage, content);
         } catch (Exception e) {
-            return false;
+            return true;
         }
     }
 

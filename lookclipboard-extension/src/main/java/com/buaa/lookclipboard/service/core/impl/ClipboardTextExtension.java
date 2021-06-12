@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:49:21
+ * @LastEditTime: 2021-06-12 22:47:00
  * 
  * @Description: 剪贴板文本扩展
  */
@@ -26,8 +26,8 @@ public final class ClipboardTextExtension extends ClipboardExtension<String> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isEqualInternal(IRecord lastRecord, String content) {
-        return Objects.equals(lastRecord.getContent(), content);
+    public boolean needReceiveInternal(IRecord lastRecord, String content) {
+        return !Objects.equals(lastRecord.getContent(), content);
     }
 
     /**

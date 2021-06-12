@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-12 18:39:29
+ * @LastEditTime: 2021-06-12 22:41:39
  * 
  * @Description: 剪贴板服务
  */
@@ -139,7 +139,7 @@ public final class ClipboardService implements IClipboardService {
                         synchronized (syncRoot) {
                             if (lastRecord == null
                                     || !Objects.equals(dataFormat, lastRecord.getDataFormat())
-                                    || !extension.isEqual(lastRecord.asReadOnly(), content)) {
+                                    || extension.needReceive(lastRecord.asReadOnly(), content)) {
                                 TryWrapper.<ActionResultTryContext>builder()
                                         .tryStatement((context) -> {
                                             Record record = Record.createNow(dataFormat);

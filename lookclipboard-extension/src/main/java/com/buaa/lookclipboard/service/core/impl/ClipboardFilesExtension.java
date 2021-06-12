@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-05-14 21:47:57
+ * @LastEditTime: 2021-06-12 22:48:21
  * 
  * @Description: 剪贴板文件扩展
  */
@@ -20,6 +20,7 @@ import com.buaa.commons.foundation.Ref;
 import com.buaa.commons.util.JsonUtil;
 import com.buaa.lookclipboard.model.IRecord;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections4.CollectionUtils;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 
@@ -31,21 +32,25 @@ public final class ClipboardFilesExtension extends ClipboardExtension<List<File>
      * {@inheritDoc}
      */
     @Override
-    public boolean isEqualInternal(IRecord lastRecord, List<File> content) {
+    public boolean needReceiveInternal(IRecord lastRecord, List<File> content) {
+        if (CollectionUtils.isEmpty(content)) {
+            return false;
+        }
+
         Set<File> lastFiles = JsonUtil.parse(lastRecord.getContent(), new TypeReference<HashSet<File>>() {});
         if (lastFiles == null && content == null) {
-            return true;
+            return false;
         }
         if (lastFiles == null || content == null) {
-            return false;
+            return true;
         }
 
         Set<File> files = new HashSet<>(content);
         if (lastFiles.size() != files.size()) {
-            return false;
+            return true;
         }
 
-        return files.containsAll(lastFiles);
+        return !files.containsAll(lastFiles);
     }
 
     /**

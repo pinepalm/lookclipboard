@@ -5,7 +5,7 @@
  * 
  * @LastEditors: Zhe Chen
  * 
- * @LastEditTime: 2021-06-03 21:14:15
+ * @LastEditTime: 2021-06-12 22:43:59
  * 
  * @Description: 剪贴板扩展
  */
@@ -24,13 +24,13 @@ import com.buaa.lookclipboard.service.core.IClipboardExtension;
 @SuppressWarnings("unchecked")
 public abstract class ClipboardExtension<T> implements IClipboardExtension {
     /**
-     * 内部判断是否内容与上一条记录相同
+     * 内部是否需要接收
      * 
      * @param lastRecord 上一条记录
      * @param content    原始内容
-     * @return 是否内容与上一条记录相同
+     * @return 是否需要接收
      */
-    protected abstract boolean isEqualInternal(IRecord lastRecord, T content);
+    protected abstract boolean needReceiveInternal(IRecord lastRecord, T content);
 
     /**
      * 内部在接收时调用
@@ -46,12 +46,12 @@ public abstract class ClipboardExtension<T> implements IClipboardExtension {
      * {@inheritDoc}
      */
     @Override
-    public boolean isEqual(IRecord lastRecord, Object content) {
+    public boolean needReceive(IRecord lastRecord, Object content) {
         if (lastRecord == null || !Objects.equals(lastRecord.getDataFormat(), getDataFormat())) {
-            return false;
+            return true;
         }
 
-        return isEqualInternal(lastRecord, (T) content);
+        return needReceiveInternal(lastRecord, (T) content);
     }
 
     /**
